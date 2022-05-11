@@ -128,7 +128,7 @@
 
 /* MAIN VARIABLES FOR CUSTOMIZATION */
 /* -------------------------------- */
-.header-nav {
+.nav {
   overflow: hidden;
   position: absolute;
   left: 99%;

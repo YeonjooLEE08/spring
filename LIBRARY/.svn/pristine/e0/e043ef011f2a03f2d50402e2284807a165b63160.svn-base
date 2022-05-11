@@ -34,10 +34,6 @@ input#keyword{
    outline: 0;
 }
 
-.row{
-    width: 100%;
-}
-
 </style>
 </head>
 <body>
@@ -77,7 +73,7 @@ input#keyword{
 		</div>
 		<c:if test="${not empty sessionScope.loginInfo }">
 			<div class="header-profile">
-				<nav class="header-nav">
+				<nav class="nav">
 				  <input type="checkbox" class="nav__cb" id="menu-cb"/>
 				  <div class="nav__content">
 				  

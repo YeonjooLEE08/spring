@@ -12,11 +12,6 @@
    width: 80%;
    margin: 0px auto;
 }
-.subTit {
-    border-bottom: 1px solid #dddddd;
-    padding: 15px 0px 15px 0px;
-}
-
 .subTit .line_map {
     float: right;
     width: 45%;
@@ -27,7 +22,7 @@
 table{
    border: 1px solid black;
    border-collapse: collapse;
-   width: 100%;
+   width: 800px;
    margin-top: 10px;
    text-align: center;
    margin-bottom: 30px;
@@ -60,13 +55,9 @@ select{
    color: black;
 }
 .searchBar{
+   width: 60%;
+   margin:0 auto;
    padding: 10px;
-}
-.searchBar .searchForm{
-	text-align: center;
-}
-.ntBtn{
-	text-align:right;
 }
 </style>
 </head>
@@ -77,7 +68,7 @@ select{
       <h2>공지사항</h2>
    </div>
    <div class="searchBar">
-      <form action="/board/searchNt" class="searchForm" method="post" id="SearchNtForm">
+      <form action="/board/searchNt" method="post" id="SearchNtForm">
       <!-- 검색구분 선택 -->
          <select class="SelectSearch" name="searchSub">
             <option value="NT_TITLE">제목</option>
@@ -90,13 +81,16 @@ select{
          </button>
       </form>      
    </div>
+   <div class="row">
+         <div class="col-8">
+            <div class="mb-3">
             <table class="table table-hover table-border text-center">
             <colgroup>
-               <col width="7%">
+               <col width="5%">
                <col width="*">
-               <col width="15%">
-               <col width="13%">
-               <col width="11%">
+               <col width="10%">
+               <col width="20%">
+               <col width="10%">
                <thead>
                <tr>
                   <th scope="col">No</th>
@@ -130,12 +124,16 @@ select{
                </c:choose>
                </tbody>
             </table>
-         <div class="ntBtn">
-	         <c:if test="${sessionScope.loginInfo.isAdmin eq 'Y' }" >
-	            <button type="button" class="btn btn-success btn-sm" onclick="location.href='/board/ntBoardWrite';">글쓰기</button>
-	         </c:if>
-   		</div>
-	</div>
+         <div>
+         <c:if test="${sessionScope.loginInfo.isAdmin eq 'Y' }" >
+            <button type="button" class="btn btn-success btn-sm" onclick="location.href='/board/ntBoardWrite';">글쓰기</button>
+         </c:if>
+   </div>
+   
+</div>
+</div>
+</div>
+</div>
 <script type="text/javascript" src="/resources/js/board/search_nt_board.js"></script>
 </body>
 </html>
