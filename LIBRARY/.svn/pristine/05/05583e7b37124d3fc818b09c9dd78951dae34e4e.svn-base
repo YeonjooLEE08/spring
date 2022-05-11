@@ -1,0 +1,132 @@
+@charset "UTF-8";
+
+.top-container{
+		background-color: #246350;
+		height: 100%;
+	}
+	
+	.header-loginBox{
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		height: 3rem;
+		position: relative;
+		right: 8%;
+		margin-bottom: 1.5rem;
+	
+	}
+	.header-loginBoxDiv{
+		margin: 2rem 0.5rem;
+		color: #FDFAF6;
+	}
+	.header-mainBox{
+		display: flex;
+		position: relative;
+		height: 7rem;
+		width: 78%;
+		left: 12%;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.nav-logoDiv{
+		color: #FDFAF6;
+	}
+	.header-profile{
+		display: flex;
+		justify-content: space-evenly;
+		width: 300px;
+		padding: 0.5rem;
+		padding-right: 1rem;
+		border-radius: 10px;
+		align-content: center;
+		background-color: #FDFAF6;
+		color:#246350;
+		display: flex;
+		align-items: center;
+	}
+	
+	.header-profile img{
+		width: 4rem;
+		height: 4rem;
+		object-fit:cover;
+		border-radius: 30px;
+		margin-right: 1rem;
+		border-radius: 100%;
+	}
+	
+	.header-profile-icon{
+		border-top: 1px solid #F4EEE8;
+	}
+	
+	.header-profile-icon span:hover{
+		background-color: #246350;
+		border-radius: 10px;
+		color: #F4EEE8;
+		cursor: pointer;
+	}
+	
+	.adminIcon{
+		position: relative;
+		left: 22.3rem;
+		bottom: 2.8rem;
+		font-size: 1.5rem;
+	}
+	.nav-main-menu ul li{
+		list-style: none;
+	}
+	.nav-main-menu a{
+		text-decoration: none;
+	}
+	
+	.nav-main-menu{
+		background-color: #FAF1E6;
+	}
+	.nav-main-menu ul{
+		display: flex;
+		height: 5rem;
+		align-items: center;
+		justify-content: center;
+		list-style: none;
+	}
+	
+	.nav-main-menu > ul > li {
+		font-size: 1.4rem;
+		margin: 2rem;
+		float:left;
+		width:140px;
+		position:relative;
+	}
+	
+	.nav-main-menu > ul > li > ul {
+		width:130px;
+		display:none;
+		position: absolute;
+		font-size:20px;
+		padding-left: 0px;
+	}
+	
+	.nav-main-menu > ul > li:hover > ul {
+		display:block;
+		padding-left: 0px;
+	}
+	.nav-main-menu > ul > li > ul > li:hover {
+		background: orange;
+		transition: ease 1s;
+	}
+	.badge1 {
+  		position:relative;
+	}
+	.badge1[data-badge]:after {
+	   content:attr(data-badge);
+	   position:absolute;
+		top: -5px;
+	    left: 10px;
+	   font-size:.8em;
+	   background:red;
+	   color:white;
+	   width:18px;height:18px;
+	   text-align:center;
+	   line-height:18px;
+	   border-radius:70%;
+	   box-shadow:0 0 1px #333;
+	}

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문을 mapper태그 안에 작성 -->
+<mapper namespace="bookMapper">
+ 
+	<resultMap type="com.kh.library.book.vo.BookCategoryVO" id="bookCate">
+		<id column="CATE_CODE" 		property="cateCode"/>
+		<result column="CATE_NAME" 	property="cateName"/>
+	</resultMap>
+
+	<resultMap type="com.kh.library.book.vo.BookVO" id="book">
+		<id column="BOOK_CODE" 					property="bookCode"/>
+		<result column="BOOK_NAME" 				property="bookName"/>
+		<result column="BOOK_WRITER" 			property="bookWriter"/>
+		<result column="BOOK_CONTENT" 			property="bookContent"/>
+		<result column="PUBLISHER" 				property="publisher"/>
+		<result column="CATE_CODE" 				property="cateCode"/>
+		<result column="RECEIVE_DATE" 			property="receiveDate"/>
+		<result column="BOOK_STOCK" 			property="bookStock"/>
+		<result column="IS_NOMI" 				property="isNomi"/>
+		<result column="RESERVE_CNT" 			property="reserveCnt"/>
+		<result column="IS_PLACE" 				property="isplace"/>
+		<result column="MADE_DATE" 				property="madeDate"/>
+		<result column="BK_AT_IMG_NAME"			property="btAtImgName"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.book.vo.BookVO" id="dBook">
+      <id column="BOOK_CODE"                property="bookCode"/>
+      <result column="BOOK_NAME"             property="bookName"/>
+      <result column="BOOK_WRITER"          property="bookWriter"/>
+      <result column="BOOK_CONTENT"          property="bookContent"/>
+      <result column="PUBLISHER"             property="publisher"/>
+      <result column="CATE_CODE"             property="cateCode"/>
+      <result column="RECEIVE_DATE"          property="receiveDate"/>
+      <result column="BOOK_STOCK"          property="bookStock"/>
+      <result column="IS_NOMI"             property="isNomi"/>
+      <result column="RESERVE_CNT"          property="reserveCnt"/>
+      <result column="IS_PLACE"             property="isplace"/>
+      <result column="MADE_DATE"             property="madeDate"/>
+      <collection property="bookImgList"       resultMap="bookImg"/>
+   </resultMap>
+   
+	<resultMap type="com.kh.library.book.vo.ImgVO" id="img">
+		<id column="BK_IMG_CODE" 				property="bkImgCode"/>
+		<result column="BK_ORIGIN_NAME" 		property="bkOriginName"/>
+		<result column="BK_AT_IMG_NAME" 		property="bkAtImgName"/>
+		<result column="IS_MAIN" 				property="isMain"/>
+		<result column="BOOK_CODE" 				property="bookCode"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.book.vo.ReserveVO" id="reserve">
+		<id column="RESERVE_CODE" 				property="reserveCode"/>
+		<result column="APPLI_DATE" 			property="appliDate"/>
+		<result column="IS_RESERVE" 			property="isReserve"/>
+		<result column="RESERVE_DATE" 			property="reserveDate"/>
+		<result column="RETURN_DATE" 			property="returnDate"/>
+		<result column="BOOK_CODE" 				property="bookCode"/>
+		<result column="MEM_ID" 				property="memId"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.book.vo.HopeBookVO" id="hopeBook">
+		<id column="HOPE_CODE"				property="hopeCode"/>
+		<result column="HOPE_NAME"  		property="hopeName"/>
+		<result column="HOPE_WRITER"  		property="hopeName"/>
+		<result column="HOPE_PUBLISHER"  	property="hopePublisher"/>
+		<result column="MEM_ID"  			property="memId"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.book.vo.RecommendVO" id="recommend">
+		<id column="RC_CODE"				property="rcCode"/>
+		<result column="RC_NAME"			property="rcName"/>
+		<result column="RC_CONTENT"			property="rcName"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.book.vo.RecommendImgVO" id="recommendImg">
+		<id column="RC_IMG_CODE"				property="rcImgCode"/>
+		<result column="RC_ORIGIN_NAME"			property="rcOriginName"/>
+		<result column="RC_AT_IMG_NAME"			property="rcAtImgName"/>
+		<result column="RC_CODE"			property="rcCode"/>
+		
+	</resultMap>
+	
+	<select id="selectBookCategory" resultMap="bookCate">
+	SELECT CATE_CODE
+		, CATE_NAME
+	FROM BOOK_CATEGORY
+	</select>
+	
+	<insert id="insertBookCategory">
+	INSERT INTO BOOK_CATEGORY(
+		CATE_CODE
+		, CATE_NAME
+	)VALUES(
+		#{cateCode}
+		,#{cateName}
+	)
+	</insert>
+	
+	
+	<select id="selectBookList" resultMap="book">
+		SELECT BOOK.BOOK_CODE
+		    , BOOK_NAME
+		    , BOOK_WRITER
+		    , PUBLISHER
+		    , BOOK_STOCK
+		    , BK_AT_IMG_NAME
+		FROM BOOK, BOOK_IMAGE IMG
+		WHERE BOOK.BOOK_CODE = IMG.BOOK_CODE
+		AND IS_MAIN = 'Y'
+		ORDER BY BOOK.BOOK_CODE DESC
+	</select>
+	
+	<insert id="insertBook">
+		INSERT INTO BOOK (
+			BOOK_CODE
+			, BOOK_NAME
+			, BOOK_WRITER
+			, BOOK_CONTENT
+			, PUBLISHER
+			, BOOK_STOCK
+			, MADE_DATE
+			, CATE_CODE
+		) VALUES (
+			#{bookCode}
+			, #{bookName}
+			, #{bookWriter}
+			, #{bookContent}
+			, #{publisher}
+			, #{bookStock}
+			, #{madeDate}
+			, #{cateCode}
+		)	
+	</insert>
+	
+	<insert id="insertBookImages">
+		INSERT INTO BOOK_IMAGE (
+			BK_IMG_CODE
+			, BK_ORIGIN_NAME
+			, BK_AT_IMG_NAME
+			, IS_MAIN
+			, BOOK_CODE
+		)
+		<foreach collection="bookImgList" item="bookImg" separator ="UNION ALL">
+			SELECT #{bookImg.bkImgCode}
+				, #{bookImg.bkOriginName}
+				, #{bookImg.bkAtImgName}
+				, #{bookImg.isMain}
+				, #{bookImg.bookCode}
+			 FROM DUAL
+			</foreach>
+	</insert>
+	
+	<select id="selectNextImgCode" resultType="int">
+		SELECT NVL(MAX(BOOK_CODE), 0) + 1
+		FROM BOOK_IMAGE
+	</select>
+	
+	<select id="selectNextBookCode" resultType="String">
+		SELECT 'BOOK_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(BOOK_CODE, 6))), 0) + 1, 3, '0')
+		FROM BOOK
+	</select>
+	
+	
+		
+	<!-- 책 대여 -->
+	<insert id="insertReserve">
+		MERGE INTO RESERVE
+		USING DUAL
+		ON ( BOOK_CODE = #{bookCode} AND MEM_ID = #{memId})
+		WHEN NOT MATCHED THEN
+		    INSERT ( 
+		        RESERVE_CODE
+		        , BOOK_CODE
+		        , MEM_ID
+		    ) VALUES (
+		        #{reserveCode}
+		        , #{bookCode}
+		        , #{memId}
+		INSERT INTO RESERVE (
+		    RESERVE_CODE
+		    , APPLI_DATE
+		    , IS_RESERVE
+		    , BOOK_CODE
+		    , MEM_ID
+		    , RESERVE_DATE
+		    , RETURN_DATE
+		) VALUES (
+		
+		)
+	</insert>
+	
+	<!-- 희망도서 신청 -->
+	<insert id="regHopeBook">
+		INSERT INTO BOOK_HOPE(
+			HOPE_CODE
+			, HOPE_NAME
+			, HOPE_WRITER
+			, HOPE_PUBLISHER
+			, MEM_ID)
+		VALUES(
+			SELECT 'HOPE_||LPAD(MAX(TO_NUMBER(SUBSTR(HOPE_CODE, 6))), 0) + 1, 3, '0') AS HOPE_CODE FROM BOOK_HOPE)
+			, #{hopeName}
+			, #{hopeWriter}
+			, #{hopePublisher}
+			, #{memId}
+		)
+	</insert>
+	
+	
+<!-- 	
+	<select id="selectNextHopeCode" resultType="String">
+		SELECT 'HOPE_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(HOPE_CODE, 5))), 0) + 1, 3, '0')
+		FROM BOOK
+	</select> -->
+	
+	
+	<!-- 추천도서 등록 -->
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,22 @@
+package com.kh.library.item.vo;
+
+public class testVO {
+	private String mainImg;
+	private String[] subImg;
+	
+	public String getMainImg() {
+		return mainImg;
+	}
+	public void setMainImg(String mainImg) {
+		this.mainImg = mainImg;
+	}
+	public String[] getSubImg() {
+		return subImg;
+	}
+	public void setSubImg(String[] subImg) {
+		this.subImg = subImg;
+	}
+	
+	
+	
+}

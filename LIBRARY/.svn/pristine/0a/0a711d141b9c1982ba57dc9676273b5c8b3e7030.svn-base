@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문을 mapper태그 안에 작성 -->
+<mapper namespace="itemMapper">
+	<resultMap type="com.kh.library.item.vo.ItemCategoryVO" id="itemCate">
+	<id column="CATE_CODE"		 		property="cateCode"/>
+	<result column="CATE_NAME"	 		property="cateName"/>
+	<result column="IS_DELETE" 			property="isDelete"/>
+	</resultMap>
+
+	<resultMap type="com.kh.library.item.vo.ItemVO" id="item">
+	<id column="ITEM_CODE"		 		property="itemCode"/>
+	<result column="ITEM_NAME" 			property="itemName"/>
+	<result column="ITEM_PRICE" 		property="itemPrice"/>
+	<result column="ITEM_DETAIL"		property="itemDetail"/>
+	<result column="ITEM_STOCK" 		property="itemStock"/>
+	<result column="CATE_CODE" 			property="cateCode"/>
+	<result column="ITEM_AT_IMG_NAME" 	property="itemAtImgName"/>
+	<result column="IS_DELETE" 			property="isDelete"/>
+	<result column="keyword" 			property="keyword"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.item.vo.ItemVO" id="dItem">
+	<id column="ITEM_CODE"		 		property="itemCode"/>
+	<result column="ITEM_NAME" 			property="itemName"/>
+	<result column="ITEM_PRICE" 		property="itemPrice"/>
+	<result column="ITEM_DETAIL"		property="itemDetail"/>
+	<result column="ITEM_STOCK" 		property="itemStock"/>
+	<result column="CATE_CODE" 			property="cateCode"/>
+	<collection property="itemImgList" resultMap="itemImg"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.item.vo.ItemImgVO" id="itemImg">
+	<id column="ITEM_IMG_CODE" 			property="itemImgCode"/>
+	<result column="ITEM_ORIGIN_NAME" 	property="itemOriginName"/>
+	<result column="ITEM_AT_IMG_NAME" 	property="itemAtImgName"/>
+	<result column="IS_MAIN" 			property="isMain"/>
+	<result column="ITEM_CODE" 			property="itemCode"/>
+	</resultMap>
+	
+	<!-- 카테고리조회 -->
+	<select id="selectItemCategory" resultMap="itemCate">
+	SELECT CATE_CODE
+		, CATE_NAME
+	FROM ITEM_CATEGORY
+	WHERE IS_DELETE = 'N'
+	ORDER BY CATE_NAME ASC
+	</select>
+	
+	<!-- 카테고리등록 -->
+	<insert id="insertCategory">
+	INSERT INTO ITEM_CATEGORY(
+		CATE_CODE
+		, CATE_NAME
+	)VALUES(
+		#{cateCode}
+		,#{cateName}
+	)
+	</insert>
+	
+	<!-- 카테고리 수정 -->
+	<update id="updateCategory">
+	UPDATE ITEM_CATEGORY 
+	SET CATE_NAME = #{cateName}
+	WHERE CATE_CODE = #{cateCode}
+	</update>
+	
+	<!-- 카테고리 삭제 상태변경 -->
+	<update id="updateIsDelete">
+	UPDATE ITEM_CATEGORY
+	SET IS_DELETE = #{isDelete}
+	WHERE CATE_CODE = #{cateCode}
+	</update>
+	
+	<!-- 카테고리 완전삭제 -->
+	<delete id="deleteCategory">
+	DELETE ITEM_CATEGORY
+	WHERE CATE_CODE=#{cateCode}
+	</delete>
+	
+	<!-- ITEM_CATE_CODE 다음 값 조회 -->
+	<select id="NextItemCateCode" resultType="String">
+	SELECT 'CATE_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CATE_CODE, 6))), 0) + 1, 3, '0')
+	FROM ITEM_CATEGORY
+	</select>
+
+	<!-- 굿즈목록조회 -->
+	<select id="selectItems" resultMap="item">
+	SELECT ITEM.ITEM_CODE
+		, ITEM_NAME
+		, ITEM_PRICE
+		, CATE_CODE
+		, ITEM_AT_IMG_NAME
+	FROM ITEM ITEM, ITEM_IMAGE IMG
+	WHERE ITEM.ITEM_CODE = IMG.ITEM_CODE
+	AND IS_MAIN ='Y'
+	AND IS_DELETE = 'N'
+	<if test="cateCode != null and !cateCode.equals('')">
+		AND CATE_CODE = #{cateCode}
+	</if>
+	ORDER BY ITEM.ITEM_CODE DESC
+	</select>
+	
+	
+	<!-- 굿즈검색 -->
+	<select id="searchItem" resultMap="item">
+	SELECT ITEM.ITEM_CODE
+		, ITEM_NAME
+		, ITEM_PRICE
+		, CATE_CODE
+		, ITEM_AT_IMG_NAME
+	FROM ITEM ITEM, ITEM_IMAGE IMG
+	WHERE ITEM.ITEM_CODE = IMG.ITEM_CODE
+	AND IS_MAIN ='Y'
+	AND IS_DELETE = 'N'
+	AND ITEM_NAME LIKE '%'||#{keyword}||'%'
+	ORDER BY ITEM.ITEM_CODE DESC
+	</select>
+	
+	<!-- 굿즈 검색 개수 -->
+	<select id="searchItemCnt" resultType="int">
+	SELECT COUNT(*) AS ITEM_CNT
+    FROM ITEM
+    WHERE ITEM_NAME LIKE '%'||#{keyword}||'%'
+    AND IS_DELETE = 'N'
+	</select>
+	
+	<!-- 굿즈상세조회 -->
+	<select id="selectItemDetail" resultMap="dItem">
+	SELECT ITEM.ITEM_CODE
+		, ITEM_NAME
+		, ITEM_PRICE
+		, ITEM_DETAIL
+		, ITEM_STOCK
+		, CATE_CODE
+		, ITEM_AT_IMG_NAME
+		, IS_MAIN
+	FROM ITEM ITEM, ITEM_IMAGE IMG
+	WHERE ITEM.ITEM_CODE = IMG.ITEM_CODE
+	AND ITEM.ITEM_CODE = #{itemCode}
+	</select>
+	
+	<!-- 굿즈등록 -->
+	<insert id="insertItem">
+	INSERT INTO ITEM(
+		ITEM_CODE
+		, ITEM_NAME
+		, ITEM_PRICE
+		, ITEM_DETAIL
+		, CATE_CODE
+	) VALUES(
+		#{itemCode}
+		, #{itemName}
+		, #{itemPrice}
+		, #{itemDetail}
+		, #{cateCode}
+	)
+	</insert>
+	
+	<!-- 이미지삽입 -->
+	<insert id="insertItemImg">
+	INSERT INTO ITEM_IMAGE(
+		ITEM_IMG_CODE
+		, ITEM_ORIGIN_NAME
+		, ITEM_AT_IMG_NAME
+		, IS_MAIN
+		, ITEM_CODE
+	)
+		<foreach collection="itemImgList" item="img" separator="UNION ALL">
+		SELECT #{img.itemImgCode}
+			, #{img.itemOriginName}
+			, #{img.itemAtImgName}
+			, #{img.isMain}
+			, #{img.itemCode}
+		FROM DUAL
+		</foreach>
+	</insert>
+	
+	<!-- ITEM_CODE 다음 값 조회 -->
+	<select id="NextItemCode" resultType="String">
+	SELECT 'ITEM_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(ITEM_CODE, 6))), 0) + 1, 3, '0')
+	FROM ITEM
+	</select>
+	
+	<!-- ITEM_IMG_CODE 다음 값 조회 -->
+	<select id="NextImgCode" resultType="int">
+	SELECT NVL(MAX(ITEM_IMG_CODE), 0) + 1
+	FROM ITEM_IMAGE
+	</select>
+	
+	<!-- ITEM 삭제유무 업데이트 -->
+	<update id="updateIsDeleteItem">
+		UPDATE ITEM
+		SET IS_DELETE = #{isDelete}
+		WHERE ITEM_CODE = #{itemCode}
+	</update>
+	
+	<!-- ITEM 완전삭제 -->
+	<delete id="deleteItem">
+	DELETE ITEM
+	WHERE ITEM_CODE = #{itemCode}
+	</delete>
+	
+	<!-- ITEM이미지 삭제 -->
+	<delete id="deleteItemImgAll">
+		DELETE ITEM_IMAGE
+		WHERE ITEM_CODE = #{itemCode}	
+	</delete>
+	
+	<!-- 선택된 ITEM 삭제유무 업데이트 -->
+	<update id="updateIsDeleteItems">
+		UPDATE ITEM
+		SET IS_DELETE = #{isDelete}
+		WHERE ITEM_CODE IN
+		<foreach collection="itemCodeArr" item="itemCode" open="(" close=")" separator=",">
+			#{itemCode}
+		</foreach>
+	</update>
+	
+	<!-- 선택된 ITEM 완전삭제 -->
+	<delete id="deleteItems">
+		DELETE ITEM
+		WHERE ITEM_CODE IN
+		<foreach collection="itemCodeArr" item="itemCode" open="(" close=")" separator=",">
+			#{itemCode}
+		</foreach>
+	</delete>
+	
+	<!-- 선택된 ITEM_IMG 삭제 -->
+	<delete id="deleteItemsImgs">
+		DELETE ITEM_IMAGE
+		WHERE ITEM_CODE IN
+		<foreach collection="itemCodeArr" item="itemCode" open="(" close=")" separator=",">
+			#{itemCode}
+		</foreach>		
+	</delete>
+	
+	<!-- ITEM 수정 -->
+	<update id="updateItem">
+		UPDATE ITEM
+		SET ITEM_NAME = #{itemName}
+			, CATE_CODE = #{cateCode}
+			, ITEM_PRICE = #{itemPrice}
+			, ITEM_DETAIL = #{itemDetail}
+		WHERE ITEM_CODE = #{itemCode}
+	</update>
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문을 mapper태그 안에 작성 -->
+<mapper namespace="otherboardMapper">
+	<resultMap type="com.kh.library.board.vo.FreeBoardVO" id="free">
+		<id column="BOARD_NUM" 				property="boardNum"/>
+		<result column="BOARD_TITLE"		property="boardTitle"/>
+		<result column="BOARD_CONTENT" 		property="boardContent"/>
+		<result column="BOARD_READ_CNT" 	property="boardReadCnt"/>
+		<result column="BOARD_CREATE_DATE" 	property="boardCreateDate"/>
+		<result column="MEM_ID" 			property="memId"/>
+		<result column="MEM_NAME" 			property="memName"/>
+		<result column="ROWNUM" 			property="rownum"/>	
+		<result column="sort" 				property="sort"/>
+		<result column="keyword" 			property="keyword"/>	
+	</resultMap>
+	
+	<resultMap type="com.kh.library.board.vo.FreeBoardCmtVO" id="freeCmt">
+		<id column="COMMENT_NUM" 			property="commentNum"/>
+		<result column="COMMENT_CONTENT" 	property="commentContent"/> 
+		<result column="COMMENT_DATE" 		property="commentDate"/>
+		<result column="MEM_ID" 			property="memId"/>
+		<result column="MEM_NAME" 			property="memName"/>
+		<result column="MEM_IMAGE" 			property="memImage"/>
+		<result column="BOARD_NUM" 			property="boardNum"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.board.vo.QnaVO" id="qna">
+		<id column="QNA_NUM" 				property="qnaNum"/> 
+		<result column="QNA_TITLE" 			property="qnaTitle"/> 
+		<result column="QNA_CONTENT" 		property="qnaContent"/>
+		<result column="QNA_CREATE_DATE" 	property="qnaCreateDate"/>
+		<result column="QNA_READ_CNT" 		property="qnaReadCnt"/>
+		<result column="QNA_IS_PRIVATE" 	property="qnaIsPrivate"/>
+		<result column="QNA_PW" 			property="qnaPw"/>
+		<result column="MEM_ID" 			property="memId"/>
+		<result column="MEM_NAME" 			property="memName"/>
+		<result column="ROWNUM" 			property="rownum"/>
+		<result column="IS_ANSWERED" 		property="isAnswered"/>
+		<result column="sort" 				property="sort"/>
+		<result column="keyword" 			property="keyword"/>	
+	</resultMap>
+	
+	<resultMap type="com.kh.library.board.vo.QnaAnswerVO" id="qnaAnswer">
+		<id column="ANSWER_NUM" 			property="answerNum"/>
+		<result column="ANSWER_CONTENT" 	property="answerContent"/>
+		<result column="QNA_NUM" 			property="qnaNum"/>
+		<result column="ANSWER_DATE" 		property="answerDate"/>
+	</resultMap>
+	
+	<!-- ///////////////////        자유게시판           /////////////////////////////  -->
+	<!-- 자유게시판 글 갯수 조회 -->
+	<select id="selectBoardCnt" resultType="int">
+		SELECT COUNT(BOARD_NUM)
+		FROM BOARD
+		<if test="keyword!=null and !keyword.equals('')">
+			WHERE ${sort} LIKE '%'||#{keyword}||'%'
+		</if>
+	</select>
+	
+	<!-- 게시판리스트조회 -->
+	<select id="selectFreeBoardList" resultMap="free">
+	SELECT BOARD_NUM
+				, BOARD_TITLE
+				, BOARD_READ_CNT
+				, BOARD_CREATE_DATE
+				, ROWNUM
+				, MEM_NAME
+		FROM
+		(
+		    SELECT BOARD_NUM
+				, BOARD_TITLE
+				, BOARD_READ_CNT
+				, BOARD_CREATE_DATE
+				, ROWNUM
+				, MEM_NAME
+		        , ROWNUM AS ROW_NUM
+		    FROM
+		    (
+		        SELECT BOARD_NUM
+					, BOARD_TITLE
+					, BOARD_READ_CNT
+					, BOARD_CREATE_DATE
+					, ROWNUM
+					, MEM_NAME
+				FROM BOARD 
+				ORDER BY BOARD_CREATE_DATE DESC 
+		    )
+		)
+		WHERE ROW_NUM &gt;= #{startNum} AND ROW_NUM &lt;= #{endNum}		
+	</select>
+	
+	<!-- 다음 게시판 번호확인 -->
+	<select id="nextFreeBoardNum" resultType="String">
+		SELECT 'FREE_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(BOARD_NUM, 6))),0) +1, 3, '0')
+		FROM BOARD
+	</select>
+	
+	<!-- 게시판 등록 -->
+	<insert id="insertFreeBoard">
+		INSERT INTO BOARD(
+			BOARD_NUM
+			, BOARD_TITLE
+			, BOARD_CONTENT
+			, MEM_ID
+			, MEM_NAME
+		) VALUES(
+			#{boardNum}
+			, #{boardTitle}
+			, #{boardContent}
+			, #{memId}
+			, #{memName}
+		)
+	</insert>
+	
+	<!-- 게시판 상세조회 -->
+	<select id="selectFreeBoardDetail" resultMap="free">
+		SELECT BOARD_TITLE
+			, BOARD_CONTENT
+			, BOARD_READ_CNT
+			, BOARD_CREATE_DATE
+			, BOARD_NUM
+			, MEM_ID
+			, MEM_NAME
+		FROM BOARD
+		WHERE BOARD_NUM = #{boardNum}
+	</select>
+	
+	<!-- 자유게시판 조회수 -->
+	<update id="updateFreeBoardReadCnt">
+		UPDATE BOARD
+		SET BOARD_READ_CNT = BOARD_READ_CNT+1
+		WHERE BOARD_NUM = #{boardNum}
+	</update>
+	
+	<!-- 자유게시판 수정 -->
+	<update id="updateFreeBoard">
+		UPDATE BOARD
+		SET BOARD_TITLE = #{boardTitle}
+			, BOARD_CONTENT = #{boardContent}
+		WHERE BOARD_NUM = #{boardNum}
+	</update>
+	
+	<!-- 자유게시판 삭제 -->
+	<delete id="deleteFreeBoard">
+		DELETE FROM BOARD
+		WHERE BOARD_NUM = #{boardNum}
+	</delete>
+	
+	<!-- 자유게시판 검색 -->
+	<select id="selectSearch" resultMap="free">
+		SELECT BOARD_NUM
+				, BOARD_TITLE
+				, BOARD_READ_CNT
+				, BOARD_CREATE_DATE
+				, ROWNUM
+				, MEM_NAME
+		FROM
+		(
+		    SELECT BOARD_NUM
+					, BOARD_TITLE
+					, BOARD_READ_CNT
+					, BOARD_CREATE_DATE
+					, ROWNUM
+					, MEM_NAME
+			        , ROWNUM AS ROW_NUM
+		    FROM
+		    (
+		        SELECT BOARD_NUM
+						, BOARD_TITLE
+						, BOARD_READ_CNT
+						, BOARD_CREATE_DATE
+						, ROWNUM
+						, MEM_NAME
+				FROM BOARD
+				WHERE ${sort} LIKE '%'||#{keyword}||'%'
+				ORDER BY BOARD_CREATE_DATE DESC 
+		    )
+		)
+		WHERE ROW_NUM &gt;= #{startNum} AND ROW_NUM &lt;= #{endNum}		
+	</select>
+	
+	
+	<!-- 자유게시판 댓글 조회 -->
+	<select id="selectFreeBoardCmt" resultMap="freeCmt">
+		SELECT COMMENT_NUM
+			, COMMENT_CONTENT
+			, COMMENT_DATE
+			, MEM_NAME
+			, BOARD_NUM
+			, MEM_IMAGE
+			, MEM_ID
+		FROM BOARD_COMMENT 
+		WHERE BOARD_NUM = #{boardNum}
+		ORDER BY COMMENT_DATE DESC
+	</select>
+	
+	<!-- 자유게시판 댓글 다음번호조회 -->
+	<select id="selectNextFrCmtNum" resultType="int">
+		SELECT NVL(MAX(COMMENT_NUM), 0) + 1
+		FROM BOARD_COMMENT
+	</select>
+	
+	<!-- 자유게시판 댓글 등록 -->
+	<insert id="insertFrBoardCmt">
+		INSERT INTO BOARD_COMMENT(
+			COMMENT_NUM
+			, COMMENT_CONTENT
+			, MEM_NAME
+			, BOARD_NUM
+			, MEM_ID
+			, MEM_IMAGE
+		) VALUES(
+			#{commentNum}
+			, #{commentContent}
+			, #{memName}
+			, #{boardNum}
+			, #{memId}
+			, #{memImage}
+		)
+	</insert>
+	
+	<!-- 자유게시판 댓글 수정 -->
+	<update id="updateFreeBoardCmt">
+		UPDATE BOARD_COMMENT
+		SET COMMENT_CONTENT = #{commentContent}
+		WHERE COMMENT_NUM = #{commentNum}
+	</update>
+	
+	<!-- 자유게시판 댓글 삭제 -->
+	<delete id="deleteFreeBoardCmt">
+		DELETE FROM BOARD_COMMENT
+		WHERE COMMENT_NUM = #{commentNum}
+	</delete>
+	
+	
+	
+	<!-- ///////////////////        QNA게시판           /////////////////////////////  -->
+	
+	<!-- Qna게시판 다음번호 조회 -->
+	<select id="selectNextQnaNum" resultType="String">
+		SELECT 'QNA_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(QNA_NUM, 5))),0) +1, 3, '0')
+		FROM QNA
+	</select>
+	
+	<!-- Qna게시판 등록 -->
+	<insert id="insertQna">
+		INSERT INTO QNA(
+			QNA_NUM
+			, QNA_TITLE
+			, QNA_CONTENT
+			, MEM_ID
+			, MEM_NAME
+			, QNA_IS_PRIVATE
+		)VALUES(
+			#{qnaNum}
+			, #{qnaTitle}
+			, #{qnaContent}
+			, #{memId}
+			, #{memName}
+			, #{qnaIsPrivate}
+		)
+	</insert>
+	
+	<!-- 비밀글 비밀번호등록 -->
+	<update id="updateQnaPw">
+		UPDATE QNA
+		SET QNA_PW = #{qnaPw}
+		WHERE QNA_NUM = #{qnaNum}
+	</update>
+	
+	<!-- Qna게시판리스트 조회 -->
+	<select id="selectQnaList" resultMap="qna">
+		SELECT QNA_NUM
+			, QNA_TITLE
+			, QNA_CREATE_DATE
+			, QNA_IS_PRIVATE
+			, MEM_ID
+			, MEM_NAME
+			, QNA_READ_CNT
+			, ROWNUM
+			, IS_ANSWERED
+		FROM QNA
+		ORDER BY QNA_CREATE_DATE DESC
+			, ROWNUM DESC
+	</select>
+	
+	<!-- Qna 비밀글 비밀번호 체크 -->
+	<select id="checkQnaPw" resultType="String">
+		SELECT QNA_NUM
+		FROM QNA
+		WHERE QNA_NUM = #{qnaNum}
+		AND QNA_PW = #{qnaPw}
+	</select>
+	
+	<!-- Qna게시판 상세보기 -->
+	<select id="selectQnaDetail" resultMap="qna">
+		SELECT QNA_NUM
+			, QNA_TITLE
+			, QNA_CONTENT
+			, QNA_CREATE_DATE
+			, QNA_IS_PRIVATE
+			, QNA_READ_CNT
+			, MEM_ID
+			, MEM_NAME
+			, IS_ANSWERED
+		FROM QNA
+		WHERE QNA_NUM = #{qnaNum}
+	</select>
+	
+	<!-- Qna게시판 조회수 -->
+	<update id="updateQnaReadCnt">
+		UPDATE QNA
+		SET QNA_READ_CNT = QNA_READ_CNT+1
+		WHERE QNA_NUM = #{qnaNum}
+	</update>
+	
+	<!-- Qna게시판 수정 -->
+	<update id="updateQna">
+		UPDATE QNA
+		SET QNA_TITLE = #{qnaTitle}
+			, QNA_CONTENT = #{qnaContent}
+			, QNA_IS_PRIVATE = #{qnaIsPrivate}
+		WHERE QNA_NUM = #{qnaNum}
+	</update>
+	
+	<!-- Qna게시판 삭제 -->
+	<delete id="qnaDelete">
+		DELETE FROM QNA
+		WHERE QNA_NUM = #{qnaNum}
+	</delete>
+	
+	<!-- Qna게시판 다음 댓글번호 조회 -->
+	<select id="selectNextAnswerNum" resultType="String">
+		SELECT 'ANSWER_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(ANSWER_NUM, 8))),0) +1, 3, '0')
+		FROM QNA_ANSWER
+	</select>
+	
+	<!-- Qna게시판 댓글 작성 -->
+	<insert id="insertQnaAnswer">
+		INSERT INTO QNA_ANSWER(
+			ANSWER_NUM
+			, ANSWER_CONTENT
+			, QNA_NUM
+		) VALUES(
+			#{answerNum}
+			, #{answerContent}
+			, #{qnaNum}
+		)
+	</insert>
+	
+	<!-- QNA게시판 답변유무 상태변경 -->
+	<update id="updateisAnswered">
+		UPDATE QNA
+		SET IS_ANSWERED = #{isAnswered}
+		WHERE QNA_NUM = #{qnaNum}
+	</update>
+	
+	<!-- QNA게시판 댓글 조회 -->
+	<select id="selectQnaAnswer" resultMap="qnaAnswer">
+		SELECT ANSWER_NUM
+			, ANSWER_CONTENT
+			, QNA_NUM
+			, ANSWER_DATE
+		FROM QNA_ANSWER
+		WHERE QNA_NUM = #{qnaNum}
+	</select>
+	
+	<!-- QNA게시판 댓글 수정 -->
+	<update id="updateQnaAnswer">
+		UPDATE QNA_ANSWER
+		SET ANSWER_CONTENT = #{answerContent}
+			, ANSWER_DATE = SYSDATE
+		WHERE ANSWER_NUM = #{answerNum}
+	</update>
+	
+	<!-- QNA게시판 댓글 삭제 -->
+	<delete id="deleteQnaAnswer">
+		DELETE FROM QNA_ANSWER
+		WHERE ANSWER_NUM = #{answerNum}
+	</delete>
+	
+	<!-- QNA게시판 검색 -->
+	<select id="selectSearchQna" resultMap="qna">
+		SELECT QNA_NUM
+			, QNA_TITLE
+			, QNA_CREATE_DATE
+			, QNA_IS_PRIVATE
+			, MEM_ID
+			, MEM_NAME
+			, QNA_READ_CNT
+			, ROWNUM
+			, IS_ANSWERED
+		FROM QNA
+		WHERE ${sort} LIKE '%'||#{keyword}||'%'
+		ORDER BY QNA_CREATE_DATE DESC
+			, ROWNUM DESC
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

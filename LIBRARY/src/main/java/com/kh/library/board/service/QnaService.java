@@ -1,0 +1,53 @@
+package com.kh.library.board.service;
+
+import java.util.List;
+
+import com.kh.library.board.vo.QnaAnswerVO;
+import com.kh.library.board.vo.QnaVO;
+
+public interface QnaService {
+
+	//QNA게시판 등록
+	void insertQna(QnaVO qnaVO);
+	//QNA게시글 비밀번호 작성
+	void updateQnaPw(QnaVO qnaVO);
+	
+	//QNA 다음 게시판 번호 조회
+	String selectNextQnaNum();
+	
+	//게시판 조회
+	List<QnaVO> selectQnaList();
+	
+	//QNA게시판 비밀번호 확인
+	String checkQnaPw(QnaVO qnaVO);
+	
+	//QNA게시판 상세보기
+	QnaVO selectQnaDetail(QnaVO qnaVO);
+	
+	//QNA게시판 수정
+	void updateQna(QnaVO qnaVO);
+	
+	//QNA게시판 삭제
+	void qnaDelete(QnaVO qnaVO);
+	
+	//QNA 다음 댓글 번호조회
+	String selectNextAnswerNum();
+	
+	//QNA 댓글 작성
+	void insertQnaAnswer(QnaAnswerVO qnaAnswerVO);
+	
+	//QNA 댓글 조회
+	List<QnaAnswerVO> selectQnaAnswer(QnaVO qnaVO);
+	
+	//QNA댓글 상태에 따라 상태변경
+	void updateisAnswered(QnaVO qnaVO);
+	
+	//QNA댓글 수정
+	void updateQnaAnswer(QnaAnswerVO qnaAnswerVO);
+	
+	//Q&A댓글 삭제
+	void deleteQnaAnswer(QnaAnswerVO qnaAnswerVO);
+	
+	//Q&A검색
+	List<QnaVO> selectSearchQna(QnaVO qnaVO);
+}

@@ -125,3 +125,4 @@ $RECYCLE.BIN/
 .project
 */target/*
 Servers/*
+LIBRARY/src/main/webapp/META-INF/MANIFEST.MF

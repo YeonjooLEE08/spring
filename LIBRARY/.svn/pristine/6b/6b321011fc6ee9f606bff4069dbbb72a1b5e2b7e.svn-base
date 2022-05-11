@@ -1,0 +1,60 @@
+package com.kh.library.item.controller;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.kh.library.item.service.BuyService;
+import com.kh.library.item.service.OrderService;
+import com.kh.library.item.vo.OrderSheetVO;
+import com.kh.library.member.service.MemberService;
+import com.kh.library.member.vo.MemberVO;
+
+@Controller
+@RequestMapping("/order")
+public class OrderController {
+
+	@Resource(name = "buyService")
+	private BuyService buyService;
+	
+	@Resource(name = "orderService")
+	private OrderService orderService;
+	
+	@Resource(name = "memberService")
+	private MemberService memberService;
+	
+	//주문상세페이지 이동
+	@GetMapping("/referOrderd")
+	public String referOrderd(OrderSheetVO orderSheetVO, HttpSession session, Model model) {
+		String memId = ((MemberVO)(session.getAttribute("loginInfo"))).getMemId();
+		orderSheetVO.setMemId(memId);
+		model.addAttribute("buyList", orderService.paymentComplitList(orderSheetVO));
+		model.addAttribute("buyer", orderService.buyerInfo(orderSheetVO));
+		
+		return "item/order_detail";
+	}
+	
+	//구매내역조회
+	@GetMapping("/orderList")
+	public String orderList(HttpSession session, Model model) {
+		OrderSheetVO orderSheetVO = new OrderSheetVO();
+		orderSheetVO.setMemId(((MemberVO)(session.getAttribute("loginInfo"))).getMemId());
+		model.addAttribute("buyViewList", orderService.purchaseDetails(orderSheetVO));
+		model.addAttribute("orderList", orderService.selectOrderNum(orderSheetVO));
+		return "mypage/order_list";
+	}
+	
+	//구매내역기간검색
+	@PostMapping("/searchOrderPeriod")
+	public String searchOrderPeriod(OrderSheetVO orderSheetVO, HttpSession session, Model model) {
+		orderSheetVO.setMemId(((MemberVO)(session.getAttribute("loginInfo"))).getMemId());
+		model.addAttribute("buyViewList", orderService.purchaseDetails(orderSheetVO));
+		model.addAttribute("orderList", orderService.selectOrderPeriod(orderSheetVO));
+		return "mypage/order_list";
+	}
+}

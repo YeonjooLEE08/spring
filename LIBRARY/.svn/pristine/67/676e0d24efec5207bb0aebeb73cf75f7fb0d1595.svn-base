@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문을 mapper태그 안에 작성 -->
+<mapper namespace="cartMapper">
+	<resultMap type="com.kh.library.item.vo.CartVO" id="cart">
+		<id column="CART_NUM"			property="cartNum"/>
+		<result column="ITEM_CODE"	 	property="itemCode"/>
+		<result column="MEM_ID"	 		property="memId"/>
+		<result column="ITEM_CNT"	 	property="itemCnt"/>
+		<result column="CREATE_DATE"	property="createDate"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.item.vo.CartViewVO" id="cartView">
+		<id column="CART_NUM" 				property="cartNum"/>
+		<result column="ITEM_CODE" 			property="itemCode"/>
+		<result column="ITEM_NAME" 			property="itemName"/>
+		<result column="ITEM_PRICE" 		property="itemPrice"/>
+		<result column="TOTAL_PRICE" 		property="totalPrice"/>
+		<result column="ITEM_CNT" 			property="itemCnt"/>
+		<result column="CREATE_DATE" 		property="createDate"/>
+		<result column="MEM_ID" 			property="memId"/>
+		<result column="ITEM_AT_IMG_NAME" 	property="itemAtImgName"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.item.vo.BuyVO" id="buy">
+		<id column="BUY_NUM" 				property="buyNum"/>
+		<result column="MEM_ID" 			property="memId"/>
+		<result column="ITEM_CODE" 			property="itemCode"/>
+		<result column="ITEM_CNT" 			property="itemCnt"/>
+		<result column="ORDER_NUM" 			property="orderNum"/>
+		<result column="ITEM_STATE" 		property="itemState"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.item.vo.OrderSheetVO" id="order">
+		<id column="ORDER_NUM" 				property="orderNum"/>
+		<result column="BUY_DATE" 			property="buyDate"/>
+		<result column="TO_NAME" 			property="toName"/>
+		<result column="TO_ADDR" 			property="toAddr"/>
+		<result column="TO_TELL" 			property="toTell"/>
+		<result column="MEM_ID" 			property="memId"/>
+		<result column="PAY_CODE" 			property="payCode"/>
+		<result column="TOTAL_PRICE" 		property="totalPrice"/>
+		<result column="DELI_MSG" 			property="deliMsg"/>
+		<result column="inputSDate" 		property="inputSDate"/>
+		<result column="inputEDate" 		property="inputEDate"/>
+		<result column="ITEM_STATE" 		property="itemState"/>
+		<result column="MEM_NAME" 			property="memName"/>
+		<result column="sort" 				property="sort"/>
+		<result column="keyword" 			property="keyword"/>
+		<result column="ORDER_CNT" 			property="orderCnt"/>	
+	</resultMap>
+
+	<resultMap type="com.kh.library.item.vo.BuyViewVO" id="buyView">
+		<id column="BUY_NUM" 				property="buyNum"/>
+		<result column="ITEM_CODE" 			property="itemCode"/>
+		<result column="ITEM_NAME" 			property="itemName"/>
+		<result column="ITEM_PRICE" 		property="itemPrice"/>
+		<result column="TOTAL_PRICE" 		property="totalPrice"/>
+		<result column="ITEM_CNT" 			property="itemCnt"/>
+		<result column="MEM_ID" 			property="memId"/>
+		<result column="ITEM_AT_IMG_NAME" 	property="itemAtImgName"/>
+		<result column="ORDER_NUM" 			property="orderNum"/>
+		<result column="BUY_DATE" 			property="buyDate"/>
+	</resultMap>
+
+	<!-- 구매시 회원 주소변경 -->
+	<update id="updateMemaddr">
+		UPDATE BOOK_MEMBER
+		SET MEM_ADDR = #{memAddr}
+		WHERE MEM_ID = #{memId}
+	</update>
+
+	<!-- 장바구니 입력 -->
+	<insert id="insertCart">
+	MERGE INTO CART
+	USING DUAL
+	ON (ITEM_CODE = #{itemCode} AND MEM_ID = #{memId})
+	WHEN MATCHED THEN
+		UPDATE
+		SET
+		ITEM_CNT = ITEM_CNT + #{itemCnt}
+		WHERE MEM_ID = #{memId}
+	WHEN NOT MATCHED THEN
+		INSERT (
+			CART_NUM
+			, ITEM_CODE
+			, MEM_ID
+			, ITEM_CNT
+		) VALUES (
+			(SELECT NVL(MAX(CART_NUM), 0) + 1 FROM CART)
+			, #{itemCode}
+			, #{memId}
+			, #{itemCnt}
+		)	
+	</insert>
+
+	<!-- 장바구니 조회 -->
+	<select id="selectCartList" resultMap="cartView">
+		SELECT CART_NUM
+			, ITEM_CODE
+			, ITEM_NAME
+			, ITEM_PRICE
+			, TOTAL_PRICE
+			, ITEM_CNT
+			, CREATE_DATE
+			, MEM_ID
+			, ITEM_AT_IMG_NAME
+		FROM CART_VIEW
+		WHERE MEM_ID = #{memId}
+		ORDER BY CART_NUM DESC
+	</select>
+	
+	<!-- 장바구니 건별 삭제 -->
+	<delete id="deleteCart">
+		DELETE CART
+		WHERE MEM_ID = #{memId} 
+		AND ITEM_CODE = #{itemCode}
+	</delete>
+	
+	<!-- 장바구니 수량 변경 -->
+	<update id="updateCartCnt">
+		UPDATE CART
+		SET ITEM_CNT = #{itemCnt}
+		WHERE MEM_ID = #{memId}
+		AND ITEM_CODE = #{itemCode}
+	</update>
+	
+	<!-- 장바구니 선택삭제 -->
+	<delete id="deleteCarts">
+		DELETE CART
+		WHERE MEM_ID = #{memId}
+		AND ITEM_CODE IN
+		<foreach collection="itemCodes" item="itemCode" open="(" close=")" separator=",">
+			#{itemCode}
+		</foreach>
+	</delete>
+	
+	<!-- 장바구니비우기 -->
+	<delete id="deleteAllCart">
+		DELETE CART
+		WHERE MEM_ID = #{memId}
+	</delete>
+	
+	<!-- 주문페이지에서 벗어날때! -->
+	<insert id="reinsertCart">
+		INSERT INTO CART(
+			CART_NUM
+			, MEM_ID
+			, ITEM_CODE
+			, ITEM_CNT
+		)
+		<foreach collection="cartList" item="cartInfo" separator="UNION ALL">
+		SELECT
+		 	#{cartInfo.cartNum}
+		 	, #{cartInfo.memId}
+		 	, #{cartInfo.itemCode}
+		 	, #{cartInfo.itemCnt}
+		 FROM DUAL
+		</foreach>
+	</insert>
+	<select id="selectNextCartNum" resultType="int">
+		SELECT NVL(MAX(CART_NUM), 0) +1
+		FROM CART
+	</select>
+
+<!-- //////////////////// 주문관련 쿼리 /////////////////////////// -->
+	
+	<!-- 다음 구매번호 조회 -->
+	<select id="selectNextBuyNum" resultType="int">
+		SELECT NVL(MAX(BUY_NUM), 0) +1
+		FROM BUY
+	</select>
+	
+	<!-- 바로구매시 주문페이지이동 -->
+	<insert id="insertBuyAtOnce">
+		INSERT INTO BUY(
+			BUY_NUM
+			, MEM_ID
+			, ITEM_CODE
+			, ITEM_CNT
+		) VALUES(
+		 	#{buyNum}
+		 	, #{memId}
+		 	, #{itemCode}
+		 	, #{itemCnt}
+		)
+	</insert>
+	
+	<!-- BUY DB에 INSERT 주문하기->주문페이지이동 -->
+	<insert id="insertBuys">
+		INSERT INTO BUY(
+			BUY_NUM
+			, MEM_ID
+			, ITEM_CODE
+			, ITEM_CNT
+		)
+		<foreach collection="buyList" item="buyInfo" separator="UNION ALL">
+		SELECT
+		 	#{buyInfo.buyNum}
+		 	, #{buyInfo.memId}
+		 	, #{buyInfo.itemCode}
+		 	, #{buyInfo.itemCnt}
+		 FROM DUAL
+		</foreach>
+	</insert>
+	
+	<!-- 구매리스트 조회 -->
+	<select id="selectBuyViewList" resultMap="buyView">
+		SELECT BUY_NUM
+			, ITEM_CODE
+			, ITEM_NAME
+			, ITEM_PRICE
+			, TOTAL_PRICE
+			, ITEM_CNT
+			, MEM_ID
+			, ITEM_AT_IMG_NAME
+		FROM BUY_VIEW
+		WHERE MEM_ID = #{memId}
+		AND ORDER_NUM IS NULL
+		ORDER BY BUY_NUM DESC
+	</select>
+	
+	<!-- 구매리스트 삭제 -->
+	<delete id="deleteBuys">
+		DELETE BUY
+		WHERE MEM_ID = #{memId}
+	</delete>
+	
+	<!-- 구매시 orderNum 조회 -->
+	<select id="selectNextorderNum" resultType="String">
+	SELECT TO_CHAR(SYSDATE,'YYYYMMDD')||'_'
+			||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(ORDER_NUM, 10))), 0) + 1, 5, '0')
+	FROM ORDER_SHEET
+	</select>
+	
+	
+	<!-- 구매완료시 ORDER INSERT -->
+	<insert id="insertOrder">
+		INSERT INTO ORDER_SHEET(
+			ORDER_NUM
+			, TO_NAME
+			, TO_ADDR
+			, TO_TELL
+			, PAY_CODE
+			, TOTAL_PRICE
+			, DELI_MSG
+			, MEM_ID
+		) VALUES(
+			#{orderNum}
+			, #{toName}
+			, #{toAddr}
+			, #{toTell}
+			, #{payCode}
+			, #{totalPrice}
+			, #{deliMsg}
+			, #{memId}
+		) 
+	</insert>
+
+	<!-- 구매완료시 buy의 orderNum을  update -->
+	<update id="updateOrderNumtoBuy">
+		UPDATE BUY
+		SET ORDER_NUM = #{orderNum}
+		WHERE ORDER_NUM IS NULL
+		AND MEM_ID = #{memId}
+	</update>
+	
+	
+<!-- ////////////////       주문조회페이지       /////////////////////// -->
+
+	<!-- 구매상세리스트 조회 -->
+	<select id="checkBuyViewList" resultMap="buyView">
+		SELECT BUY_NUM
+			, ITEM_CODE
+			, ITEM_NAME
+			, ITEM_PRICE
+			, TOTAL_PRICE
+			, ITEM_CNT
+			, MEM_ID
+			, ITEM_AT_IMG_NAME
+			, ORDER_NUM
+		FROM BUY_VIEW
+		WHERE ORDER_NUM = #{orderNum}
+		ORDER BY BUY_NUM DESC
+	</select>
+	
+	
+	<!-- 구매상세페이지에 들어갈 구매자정보 -->
+	<select id="selectOrder" resultMap="order">
+		SELECT ORDER_NUM
+			, TO_NAME
+			, TO_TELL
+			, TO_ADDR
+			, DELI_MSG
+			, BUY_DATE
+			, TOTAL_PRICE
+			, PAY_CODE
+			, ITEM_STATE
+		FROM ORDER_SHEET
+		WHERE ORDER_NUM = #{orderNum}
+		AND MEM_ID = #{memId}
+	</select>
+
+	<!-- 구매내역조회 -->
+	<select id="purchaseDetails" resultMap="buyView">
+		SELECT ITEM_CODE
+			, ITEM_NAME
+			, ITEM_PRICE
+			, TOTAL_PRICE
+			, ITEM_CNT
+			, MEM_ID
+			, ITEM_AT_IMG_NAME
+			, ORDER_NUM
+		FROM BUY_VIEW 
+		WHERE MEM_ID = #{memId}
+		ORDER BY ORDER_NUM DESC
+	</select>
+	<!-- 구매번호끼리 묶깅 -->
+	<select id="selectOrderNum" resultMap="order">
+		SELECT ORDER_NUM
+			, BUY_DATE
+			, ITEM_STATE
+		FROM ORDER_SHEET
+		WHERE MEM_ID = #{memId}
+		ORDER BY ORDER_NUM DESC
+			, BUY_DATE DESC
+	</select>
+	
+	<!-- 구매내역 기간조회 -->
+	<select id="selectOrderPeriod" resultMap="order">
+		SELECT ORDER_NUM
+			, BUY_DATE
+		FROM ORDER_SHEET
+		WHERE MEM_ID = #{memId}
+		AND BUY_DATE BETWEEN TO_DATE(#{inputSDate})
+						AND TO_DATE(#{inputEDate}) +0.99999
+		ORDER BY ORDER_NUM DESC
+			, BUY_DATE DESC
+	</select>
+	
+	
+	<!-- 주문받은 내역조회 -->
+	<select id="selectOrderAll" resultMap="order">
+		SELECT ORDER_NUM
+		    , BUY_DATE
+		    , O.MEM_ID AS MEM_ID
+		    , PAY_CODE
+		    , TOTAL_PRICE
+		    , ITEM_STATE
+		    , MEM_NAME
+		FROM ORDER_SHEET O, BOOK_MEMBER M
+		WHERE O.MEM_ID = M.MEM_ID
+		ORDER BY ORDER_NUM DESC
+	</select>
+
+	<!-- 주문 배송상태변경 -->
+	<update id="updateItemState">
+		UPDATE ORDER_SHEET
+		SET ITEM_STATE = #{itemState}
+		WHERE ORDER_NUM = #{orderNum}
+	</update>
+	
+	<!-- 선택주문내역 배송상태변경 -->
+	<update id="updateItemsStates">
+		UPDATE ORDER_SHEET
+		SET ITEM_STATE = #{itemState}
+		WHERE ORDER_NUM IN
+		<foreach collection="orderNums" item="orderNum" open="(" close=")" separator=",">
+			#{orderNum}
+		</foreach>
+	</update>
+	
+	<!-- 선택주문내역 삭제 -->
+	<delete id="deleteOrders">
+		DELETE FROM ORDER_SHEET
+		WHERE ORDER_NUM IN
+		<foreach collection="orderNums" item="orderNum" open="(" close=")" separator=",">
+			#{orderNum}
+		</foreach>
+	</delete>
+	
+	<!-- 주문내역 배송상태별 조회 -->
+	<select id="searchKindState" resultMap="order">
+		SELECT ORDER_NUM
+		    , BUY_DATE
+		    , O.MEM_ID AS MEM_ID
+		    , PAY_CODE
+		    , TOTAL_PRICE
+		    , ITEM_STATE
+		    , MEM_NAME
+		FROM ORDER_SHEET O, BOOK_MEMBER M
+		WHERE O.MEM_ID = M.MEM_ID
+		AND ITEM_STATE = #{itemState}
+		ORDER BY ORDER_NUM DESC
+	</select>
+	
+	<!-- 주문내역 기간별 조회-->
+	<select id="searchStatePeriod" resultMap="order">
+		SELECT ORDER_NUM
+		    , BUY_DATE
+		    , O.MEM_ID AS MEM_ID
+		    , PAY_CODE
+		    , TOTAL_PRICE
+		    , ITEM_STATE
+		    , MEM_NAME
+		FROM ORDER_SHEET O, BOOK_MEMBER M
+		WHERE O.MEM_ID = M.MEM_ID
+		AND BUY_DATE BETWEEN TO_DATE(#{inputSDate})
+						AND TO_DATE(#{inputEDate}) +0.99999
+		ORDER BY ORDER_NUM DESC
+	</select>
+	
+	<!-- 주문내역 검색 조회 -->
+	<select id="searchOrderState" resultMap="order">
+		SELECT ORDER_NUM
+		    , BUY_DATE
+		    , O.MEM_ID AS MEM_ID
+		    , PAY_CODE
+		    , TOTAL_PRICE
+		    , ITEM_STATE
+		    , MEM_NAME
+		FROM ORDER_SHEET O, BOOK_MEMBER M
+		WHERE O.MEM_ID = M.MEM_ID
+		AND ${sort} LIKE '%'||#{keyword}||'%'
+		ORDER BY ORDER_NUM DESC
+	</select>
+	
+	<!-- 매출 날짜별 조회 -->
+	<select id="displaySalesDay" resultMap="order">
+		SELECT COUNT(ORDER_NUM) AS ORDER_CNT
+			, SUM(TOTAL_PRICE) AS TOTAL_PRICE
+		FROM ORDER_SHEET
+		WHERE BUY_DATE BETWEEN TO_DATE(#{inputSDate})
+						AND TO_DATE(#{inputEDate}) +0.99999
+		<if test="itemState!=null and !itemState.equals('')">
+			AND ITEM_STATE = #{itemState}
+		</if>
+	</select>
+	
+	<!-- 매출현황(1일) -->
+	<select id="selectSalesDay" resultMap="order">
+		SELECT SUM(TOTAL_PRICE) AS TOTAL_PRICE 
+			,COUNT(ORDER_NUM) AS ORDER_CNT
+		FROM ORDER_SHEET
+		WHERE BUY_DATE BETWEEN SYSDATE
+		    AND SYSDATE+0.9999
+	</select>
+	
+	<!-- 매출현황(일주일) -->
+	<select id="selectSalesWeek" resultMap="order">
+		SELECT SUM(TOTAL_PRICE) AS TOTAL_PRICE 
+			,COUNT(ORDER_NUM) AS ORDER_CNT
+		FROM ORDER_SHEET
+		WHERE BUY_DATE BETWEEN (SYSDATE - (INTERVAL '6' DAY))
+		    AND SYSDATE+0.9999
+	</select>
+	
+	<!-- 매출현황(한달) -->
+	<select id="selectSalesMonth" resultMap="order">
+		SELECT SUM(TOTAL_PRICE) AS TOTAL_PRICE 
+			,COUNT(ORDER_NUM) AS ORDER_CNT
+		FROM ORDER_SHEET
+		WHERE BUY_DATE BETWEEN (SYSDATE - (INTERVAL '1' MONTH))-1
+		    AND SYSDATE+0.9999
+	</select>
+	
+	<!-- 매출현황(일년) -->
+	<select id="selectSalesYear" resultMap="order">
+		SELECT SUM(TOTAL_PRICE) AS TOTAL_PRICE 
+			,COUNT(ORDER_NUM) AS ORDER_CNT
+		FROM ORDER_SHEET
+		WHERE BUY_DATE BETWEEN (SYSDATE - (INTERVAL '1' Year))-1
+		    AND SYSDATE+0.9999
+	</select>
+	
+	
+	<!-- 금일 주문상태별 매출현황 -->
+	<select id="selectSalesItemStateDay" resultMap="order">
+		SELECT SUM(TOTAL_PRICE) AS TOTAL_PRICE 
+			,COUNT(ORDER_NUM) AS ORDER_CNT
+		FROM ORDER_SHEET
+		WHERE ITEM_STATE = #{itemState}
+	</select>
+	
+	<!-- 선택기간별 매출현황그래프 -->
+	<select id="selcetSalesPeriod" resultMap="order">
+	SELECT D.BUY_DATE AS BUY_DATE, 
+	    DECODE(O.TOTAL_PRICE, NULL, 0, O.TOTAL_PRICE) AS TOTAL_PRICE
+	FROM (
+			 SELECT TO_CHAR(TO_DATE(TO_DATE(#{inputSDate}, 'YYYY-MM-DD') + LEVEL - 1, 'YY/MM/DD'),'YY/MM/DD') as BUY_DATE
+	         FROM DUAL
+	         CONNECT BY LEVEL &lt;= TO_DATE(#{inputEDate}, 'YYYY-MM-DD') - TO_DATE(#{inputSDate}, 'YYYY-MM-DD') + 1
+	    ) D LEFT OUTER JOIN (
+	        SELECT TO_CHAR(BUY_DATE,'YY/MM/DD') AS BUY_DATE
+			    , SUM(TOTAL_PRICE) AS TOTAL_PRICE
+			FROM ORDER_SHEET
+			WHERE BUY_DATE BETWEEN #{inputSDate}
+					    AND #{inputEDate}
+			GROUP BY TO_CHAR(BUY_DATE,'YY/MM/DD')
+			ORDER BY BUY_DATE ASC
+	    ) O
+	ON O.BUY_DATE = D.BUY_DATE
+	ORDER BY D.BUY_DATE ASC
+	</select>
+
+</mapper>
+

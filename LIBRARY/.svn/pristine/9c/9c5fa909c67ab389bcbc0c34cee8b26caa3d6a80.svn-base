@@ -1,0 +1,135 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+	.complitBookList{
+		margin: 6rem auto 0rem;
+		width: 30rem;
+	}
+	.complitBookList > div{
+		display: flex;
+		text-align: center;
+		font-size: 1.2rem;
+		align-items: center;
+		justify-content: space-around;
+	}
+	.complitBookList > div:nth-child(1n){
+		background-color: #FF8080; /* 붉은색 */
+		border-radius: 5px;
+	}
+	.complitBookList > div:nth-child(2n){
+		background-color: #FFF7BC; /* 노란색 */
+		border-radius: 2px;
+		position: relative;
+		right: 40px;
+	}
+	.complitBookList > div:nth-child(3n){
+		background-color: #C0EDA6; /* 연두색 */
+		border-radius: 10px;
+		position: relative;
+		left: 30px;
+		
+	}
+	.pageName div {
+		display: inline-block;
+		margin-top: 1rem;
+		padding: 2px 7px;
+		background-color: #FDFAF6;
+		color: #02475E;
+		text-align: center;
+		width: 8rem;
+		border-radius: 6px;
+		cursor: pointer;
+		font-size: 1rem;
+	}
+	.bookPlaner-empty{
+		width: 20rem;
+		height: 5rem;
+		background-color: #eeeeee;
+	}
+	.bookPlaner-top{
+		display: flex;
+		justify-content: space-around;
+	}
+	#toread-form input[type="text"]{
+		border: none;
+		border-bottom: 1px solid #efefef;
+		margin: 1rem auto;
+	}
+	#toread-form input::placeholder {
+		color: white;
+		text-align: center;
+	}
+	
+	@keyframes slideIn{
+		from{
+			width: 0;
+			border-bottom: 2px solid #FFF891;
+		}
+		to{
+			width: 100%;
+			border-bottom: 2px solid #FFF891;
+		}
+	}
+	
+	#toread-form input:focus {
+		animation: slideIn 0.3s linear forwards;
+	}
+	
+</style>
+</head>
+<body>
+<div class="pageName">
+독서 플래너 <div onclick="location.href='/member/bookPlanerForm';">기록하기</div>
+</div>
+<div class="bookPlaner-top">
+	<div class="bookPlaner-top-left">
+		내 취향 살펴보기
+		<div class="myChartDiv">
+			<canvas id="myChart" width="300" height="186"></canvas>
+		</div>
+	</div>
+	<div class="bookPlaner-top-right">
+		TO READ LIST
+		<form action="" id="toread-form">
+			<input type="text" placeholder="입력 후 엔터를 누르세요" required>
+			<ul id="toread-list">
+			</ul>
+			<input type="hidden" name="memId" value="${loginInfo.memId }">
+		</form>
+	</div>
+</div>
+<div class="complitBookList">
+<c:choose>
+	<c:when test="${empty complitBookList }">
+		<div class="bookPlaner-empty">
+			${loginInfo.memName }님의 첫 번째 완독 도서를 등록해 보세요!
+		</div>
+	</c:when>
+	<c:otherwise>
+		<c:forEach items="${complitBookList }" var="complitBook">
+			<div style="height: ${complitBook.bookInfo.bkPage}rem;"
+				onclick="location.href='/member/bookPlanerDetail?memId=${loginInfo.memId}&bookCode=${complitBook.bookCode }&complitCode=${complitBook.complitCode }';">
+				
+				${complitBook.bookInfo.title }
+			</div>
+		</c:forEach>
+	</c:otherwise>
+</c:choose>
+
+<c:forEach items="${chartList }" var="chart">
+	<input class="bookCategory" type="hidden" value="${chart.cateInfo.cateName }">
+	<input class="cnt" type="hidden" value="${chart.cnt }">
+</c:forEach>
+</div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+<script type="text/javascript" src="/resources/js/member/book_planer.js?ver=13"></script>
+</body>
+</html>
+

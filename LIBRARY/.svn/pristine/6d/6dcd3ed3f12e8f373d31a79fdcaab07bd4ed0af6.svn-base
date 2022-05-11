@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문을 mapper태그 안에 작성 -->
+<mapper namespace="clubMapper">
+	<resultMap type="com.kh.library.club.vo.ClubVO" id="club">
+		<id column="CLUB_CODE" property="clubCode"/>
+		<result column="CLUB_NAME" property="clubName"/>
+		<result column="CLUB_HEAD_CNT" property="clubHeadCnt"/>
+		<result column="CLUB_COMPLIT_CNT" property="clubComplitCnt"/>
+		<result column="MEM_ID" property="memId"/>
+		<result column="MEM_NAME" property="memName"/>
+		<result column="CLUB_INTRO" property="clubIntro"/>
+		<result column="CLUB_DATE" property="clubDate"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.club.vo.ClubBoardVO" id="boardInfo">
+		<id column="CB_BOARD_NUM" property="cbBoardNum"/>
+		<result column="CB_BOARD_TITLE" property="cbBoardTitle"/>
+		<result column="CB_BOARD_CONTENT" property="cbBoardContent"/>
+		<result column="CB_BOARD_DATE" property="cbBoardDate"/>
+		<result column="MEM_ID" property="memId"/>
+		<result column="MEM_NAME" property="memName"/>
+		<result column="CLUB_CODE" property="clubCode"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.club.vo.ClubBoardCmtVO" id="cmt">
+		<id column="CB_CMT_NUM" property="cbCmtNum"/>
+		<result column="CB_CMT_CONTENT" property="cbCmtContent"/>
+		<result column="CB_CMT_DATE" property="cbCmtDate"/>
+		<result column="MEM_ID" property="memId"/>
+		<result column="MEM_NAME" property="memName"/>
+		<result column="MEM_IMAGE" property="memImage"/>
+		<result column="CB_BOARD_NUM" property="cbBoardNum"/>
+	</resultMap>
+	
+	<insert id="insertClubCreate">
+		INSERT INTO BOOK_CLUB (  
+		    CLUB_CODE
+		    , CLUB_NAME
+		    , CLUB_HEAD_CNT
+		    , CLUB_INTRO
+		    , MEM_ID
+		    , MEM_NAME
+		) VALUES (
+		    (SELECT 'CLUB_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CLUB_CODE, 6))), 0) + 1, 3, 0) AS CLUB_CODE FROM BOOK_CLUB)
+		    , #{clubName}
+		    , #{clubHeadCnt}
+		    , #{clubIntro}
+		    , #{memId}
+		    , #{memName}
+		)
+	</insert>
+	
+	<update id="updateClubAdmin">
+		UPDATE BOOK_MEMBER
+		SET
+		CLUB_ADMIN = 'Y'
+		, CLUB_CODE = (SELECT 'CLUB_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CLUB_CODE, 6))), 0), 3, 0) AS CLUB_CODE FROM BOOK_CLUB)
+		WHERE MEM_ID = #{memId}
+	</update>
+	
+	<select id="selectClubList" resultMap="club">
+		SELECT CLUB_CODE
+		    , CLUB_NAME
+		    , CLUB_HEAD_CNT
+		    , CLUB_INTRO
+		    , CLUB_DATE 
+		    , MEM_ID
+		    , MEM_NAME
+		FROM BOOK_CLUB
+		ORDER BY CLUB_DATE
+	</select>
+	
+	<select id="selectClubDetail" resultMap="club">
+		SELECT CLUB_CODE
+		    , CLUB_NAME
+		    , CLUB_HEAD_CNT
+		    , CLUB_INTRO
+		    , CLUB_DATE 
+		    , MEM_ID
+		    , MEM_NAME
+		FROM BOOK_CLUB
+		WHERE CLUB_CODE = #{clubCode}
+	</select>
+	
+	<update id="updateClubDetail">
+		UPDATE BOOK_CLUB
+		SET
+		CLUB_NAME = #{clubName}
+		, CLUB_HEAD_CNT = #{clubHeadCnt}
+		, CLUB_INTRO = #{clubIntro}
+		WHERE CLUB_CODE = #{clubCode}
+	</update>
+	
+	<insert id="insertClubBoard">
+		INSERT INTO BOOK_CLUB_BOARD (
+			CB_BOARD_NUM
+			, CB_BOARD_TITLE
+			, CB_BOARD_CONTENT
+			, CLUB_CODE
+			, MEM_ID
+			, MEM_NAME
+		) VALUES (
+			(SELECT 'CB_BOARD_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CB_BOARD_NUM, 10))), 0) + 1, 3, 0) AS CB_BOARD_NUM FROM BOOK_CLUB_BOARD)
+			, #{cbBoardTitle}
+			, #{cbBoardContent}
+			, #{clubCode}
+			, #{memId}
+			, #{memName}
+		)
+	</insert>
+	
+	<select id="selectClubBoardList" resultMap="boardInfo">
+		SELECT CB_BOARD_NUM
+		    , CB_BOARD_TITLE
+		    , TO_CHAR(CB_BOARD_DATE, 'YYYY-MM-DD') AS CB_BOARD_DATE
+		    , MEM_ID
+		    , CLUB_CODE
+		    , MEM_NAME
+		FROM BOOK_CLUB_BOARD
+		WHERE CLUB_CODE = #{clubCode} 
+		ORDER BY CB_BOARD_NUM DESC
+	</select>
+	
+	<select id="selectClubBoardDetail" resultMap="boardInfo">
+		SELECT CB_BOARD_NUM
+		    , CB_BOARD_TITLE
+		    , CB_BOARD_CONTENT
+		    , TO_CHAR(CB_BOARD_DATE, 'YYYY-MM-DD HH24:MI') AS CB_BOARD_DATE
+		    , CLUB_CODE
+		    , MEM_ID
+		    , MEM_NAME
+		FROM BOOK_CLUB_BOARD
+		WHERE CB_BOARD_NUM = #{cbBoardNum}
+		AND CLUB_CODE = #{clubCode}
+	</select>
+	
+	<update id="updateClubBoardDetail">
+		UPDATE BOOK_CLUB_BOARD 
+		SET
+		CB_BOARD_TITLE = #{cbBoardTitle}
+		, CB_BOARD_CONTENT = #{cbBoardContent}
+		WHERE CB_BOARD_NUM = #{cbBoardNum}
+		AND CLUB_CODE = #{clubCode}
+	</update>
+	
+	<delete id="deleteClubBoard">
+		DELETE BOOK_CLUB_BOARD
+		WHERE CB_BOARD_NUM = #{cbBoardNum}
+		AND CLUB_CODE = #{clubCode}
+		
+	</delete>
+	
+	<!-- 댓글등록 -->
+	<insert id="insertRegBoardCmt">
+	INSERT INTO BOOK_CLUB_BOARD_COMMENT (
+		CB_CMT_NUM
+		, CB_CMT_CONTENT
+		, MEM_ID
+		, MEM_NAME
+		, CB_BOARD_NUM
+	) VALUES (
+		(SELECT 'CBCMT_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CB_CMT_NUM, 7))), 0) + 1, 3, 0) AS CB_CMT_NUM FROM BOOK_CLUB_BOARD_COMMENT)
+		, #{cbCmtContent}
+		, #{memId}
+		, #{memName}
+		, #{cbBoardNum}
+	)
+	</insert>
+	
+	<!-- 댓글조회 -->
+	<select id="selectCbCmtList" resultMap="cmt">
+		SELECT MEM_NAME
+			, TO_CHAR(CB_CMT_DATE, 'YYYY-MM-DD') AS CB_CMT_DATE
+			, CB_CMT_CONTENT
+			, CB_BOARD_NUM
+		FROM BOOK_CLUB_BOARD_COMMENT
+		WHERE CB_BOARD_NUM = #{cbBoardNum}
+	</select>
+	
+	<!-- 댓글 수정 -->
+	<update id="updateCbCmt">
+		UPDATE BOOK_CLUB_BOARD_COMMENT
+		SET
+		CB_CMT_CONTENT = #{cbCmtContent}
+		WHERE MEM_ID = ${memId}
+	</update>
+	
+	<!-- 모임 가입 -->
+	<insert id="insertClubJoin">
+		INSERT INTO BOOK_CLUB_APPLY (
+			CLUB_APPLY_CODE
+			, CLUB_CODE
+			, MEM_ID
+			, MEM_NAME
+		) VALUES (
+			(SELECT 'APPLY_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CLUB_APPLY_CODE, 7))), 0) + 1, 3, 0) AS CLUB_APPLY_CODE FROM BOOK_CLUB_APPLY)
+			, #{clubCode}
+			, #{memId}
+			, #{memName}
+		)
+	</insert>
+	
+</mapper>
+
+
+
+
+
+
+
+
+

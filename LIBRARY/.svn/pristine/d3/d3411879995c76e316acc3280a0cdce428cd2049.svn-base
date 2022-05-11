@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문을 mapper태그 안에 작성 -->
+<mapper namespace="memberMapper">
+   <resultMap type="com.kh.library.member.vo.MemberVO" id="member">
+      <id column="MEM_ID"                   property="memId"/>
+      <result column="MEM_PWD"             property="memPwd"/>
+      <result column="MEM_NAME"             property="memName"/>
+      <result column="MEM_ADDR"            property="memAddr"/>
+      <result column="MEM_TELL"            property="memTell"/>
+      <result column="MEM_EMAIL"             property="memEmail"/>
+      <result column="MEM_IMAGE"            property="memImage"/>
+      <result column="MEM_GENDER"            property="memGender"/>
+      <result column="MEM_BIRTH"             property="memBirth"/>
+      <result column="IS_DELETE"             property="isDelete"/>
+      <result column="IS_ADMIN"             property="isAdmin"/>
+      <result column="CLUB_ADMIN"          property="clubAdmin"/>
+      <result column="CLUB_CODE"             property="clubCode"/>
+      <result column="KEYWORD"             property="keyword"/>
+      <result column="ROW_NUM"             property="rowNum"/>
+      <result column="IS_OD"                property="isOd"/>
+      <result column="BR_CNT"                property="brCnt"/>
+       <result column="RSV_CNT"             property="rsvCnt"/>
+      <result column="LIMIT_DATE"          property="limitDate"/>
+      <result column="CLUB_APPLY_CODE"      property="clubApplyCode"/>
+      <result column="BOOK_COMPLIT_CNT"     property="bookComplitCnt"/>
+   </resultMap>
+   <resultMap type="com.kh.library.member.vo.MemberImageVO" id="memberImage">
+      <id column="MEM_IMG_CODE"             property="memImgCode"/>
+      <result column="MEM_ORIGIN_NAME"       property="memOriginName"/>
+      <result column="MEM_AT_IMG_NAME"       property="memAtImgName"/>
+      <result column="MEM_ID"                property="memId"/>
+   </resultMap>
+      
+   <resultMap type="com.kh.library.member.vo.BookComplitVO" id="complit">
+      <id column="COMPLIT_CODE"             property="complitCode"/>
+      <result column="COMPLIT_DATE"          property="complitDate"/>
+      <result column="COMPLIT_REVIEW"       property="complitReview"/>
+      <result column="BOOK_CODE"             property="bookCode"/>
+      <result column="MEM_ID"                property="memId"/>
+      <result column="CNT"               property="cnt"/>
+      <association property="bookInfo"       resultMap="bookMapper.book" />
+      <association property="cateInfo"       resultMap="bookMapper.bookCate" />
+   </resultMap>
+   
+   <resultMap type="com.kh.library.member.vo.ToReadListVO" id="toReadList">
+      <id column="TO_READ_LIST_CODE"       property="toReadListCode"/>
+      <result column="TO_READ_TITLE"       property="toReadTitle"/>
+      <result column="MEM_ID"          property="memId"/>
+      <result column="IS_DONE"          property="isDone"/>
+   </resultMap>
+   
+   <!--/////////////////////회원가입//////////////////// -->
+   <!-- ID 중복체크 -->
+   <select id="checkId" resultType="int">
+      SELECT COUNT(MEM_ID)
+      FROM BOOK_MEMBER
+      WHERE MEM_ID = #{memId}
+   </select>
+   
+   <!-- 프로필 사진 MEM_IMG_CODE 생성 -->
+   <select id="selectNextMemImgCode" resultType="int">
+      SELECT NVL(MAX(MEM_IMG_CODE), 0) + 1
+      FROM MEMBER_IMAGE
+   </select>
+   
+   <!-- 프로필 사진 이미지 등록 -->
+   <insert id="insertMemberImage">
+      INSERT INTO MEMBER_IMAGE (
+         MEM_IMG_CODE
+         , MEM_ORIGIN_NAME
+         , MEM_AT_IMG_NAME
+         , MEM_ID
+      ) VALUES (
+         #{memImgCode}
+         , #{memOriginName}
+         , #{memAtImgName}
+         , #{memId}
+      )
+          
+   </insert>
+   
+   <!-- 회원가입 -->
+   <insert id="join">
+      INSERT INTO BOOK_MEMBER
+          (MEM_ID
+          , MEM_PWD
+          , MEM_NAME
+          , MEM_BIRTH
+          , MEM_GENDER
+          , MEM_EMAIL
+          , MEM_IMAGE
+          , MEM_ADDR
+          , MEM_TELL
+          ) VALUES (
+          #{memId}
+          , #{memPwd}
+          , #{memName}
+          , #{memBirth}
+          , #{memGender}
+          , #{memEmail}
+          , #{memImage}
+          , #{memAddr}
+          , #{memTell}
+             )
+   </insert>
+   
+   <!-- 로그인 -->
+   <select id="login" resultMap="member">
+      SELECT MEM_ID
+         , MEM_PWD
+         , MEM_NAME
+         , MEM_GENDER
+         , MEM_IMAGE
+         , CLUB_CODE
+         , CLUB_ADMIN
+         , IS_ADMIN
+         , CLUB_APPLY_CODE
+         , LIMIT_DATE
+      FROM BOOK_MEMBER
+      WHERE MEM_ID = #{memId}
+   </select>
+   
+   <!-- 아이디찾기 -->
+   <select id="findId" resultType="String">
+      SELECT RPAD((SUBSTR(MEM_ID, 1, 2)), LENGTH(MEM_ID),'*')
+       FROM BOOK_MEMBER
+      WHERE MEM_NAME = #{memName}
+      AND MEM_EMAIL = #{memEmail}
+   </select>
+   
+   <!-- 비밀번호찾기 : 임시 비번 발송 위한 이메일 조회 -->
+   <select id="selectEmail" resultType="String">
+      SELECT MEM_EMAIL
+      FROM BOOK_MEMBER
+      WHERE MEM_ID = #{memId}
+      AND MEM_NAME = #{memName}
+   </select>
+   
+   <!-- 임시 비밀번호 -->
+   <update id="updateTempPwd">
+      UPDATE BOOK_MEMBER
+      SET MEM_PWD = #{memPwd}
+      WHERE MEM_ID = #{memId}
+   </update>
+   
+   <!-- 마이페이지 -->
+   <!-- 내 정보 상세조회 -->
+   <select id="selectMyPageDetail" resultMap="member">
+      SELECT MEM_ID
+          , MEM_PWD
+          , MEM_NAME
+          , MEM_ADDR
+          , MEM_TELL
+          , MEM_EMAIL
+          , MEM_IMAGE
+          , MEM_GENDER
+          , TO_CHAR(MEM_BIRTH, 'YYYY"년 "MM"월 "DD"일"') AS MEM_BIRTH
+          , CLUB_ADMIN
+          , CLUB_CODE
+          , CLUB_APPLY_CODE
+      FROM BOOK_MEMBER
+      WHERE MEM_ID = #{memId}
+   </select>
+   
+   
+   <!-- 내 정보 수정 -->
+   <update id="updateBasicInfo">
+      UPDATE BOOK_MEMBER
+      SET MEM_NAME = #{memName}
+         , MEM_TELL = #{memTell}
+         , MEM_EMAIL = #{memEmail}
+         , MEM_IMAGE = #{memImage}
+      WHERE MEM_ID = #{memId}
+   </update>
+   <!-- 프로필 이미지 수정 -->
+   <update id="updateMemImage">
+      UPDATE MEMBER_IMAGE
+      SET MEM_ORIGIN_NAME = #{memOriginName}
+          , MEM_AT_IMG_NAME = #{memAtImgName}
+      WHERE MEM_ID = #{memId}
+   </update>
+   <!-- 파일명 조회 : 프로필 이미지 수정 안 할 때 (기존 이미지로 채움) -->
+   <select id="selectMemAtImgName" resultType="String">
+      SELECT MEM_AT_IMG_NAME
+      FROM MEMBER_IMAGE
+      WHERE MEM_ID = #{memId}
+   </select>
+   <!-- 보안 정보 수정 -->
+   <update id="updateSecretInfo">
+      UPDATE BOOK_MEMBER
+      SET MEM_PWD = #{memPwd}
+      WHERE MEM_ID = #{memId}
+   </update>
+   <!-- 추가 정보 수정 -->
+   <update id="updatePlusInfo">
+      UPDATE BOOK_MEMBER
+      SET MEM_ADDR = #{memAddr}
+         , MEM_BIRTH = #{memBirth}
+      WHERE MEM_ID = #{memId}
+      
+   </update>
+   
+   <!--  독서플래너 조회  -->
+   <select id="selectBookPlaner" resultMap="complit"> 
+      SELECT DISTINCT C.COMPLIT_CODE 
+         , C.BOOK_CODE 
+         , COMPLIT_DATE
+         , (SELECT TITLE FROM BOOK B WHERE B.BOOK_CODE = C.BOOK_CODE) AS TITLE 
+         , (SELECT BK_PAGE FROM BOOK B WHERE B.BOOK_CODE = C.BOOK_CODE) AS BK_PAGE 
+         FROM BOOK_COMPLIT C 
+         WHERE MEM_ID = #{memId} 
+         ORDER BY COMPLIT_DATE DESC
+   </select>
+   
+   <!-- 독서플래너 차트 조회 -->
+   <select id="selectBookPlanerChart" resultMap="complit">
+      SELECT BC.CATE_CODE, BC.CATE_NAME, COUNT(BC.CATE_NAME) AS CNT
+      FROM BOOK_COMPLIT C, BOOK B, BOOK_CATEGORY BC 
+      WHERE C.BOOK_CODE = B.BOOK_CODE 
+      AND B.CATE_CODE = BC.CATE_CODE
+      AND C.MEM_ID = #{memId}
+      GROUP BY BC.CATE_NAME, BC.CATE_CODE
+      ORDER BY CATE_CODE
+   </select>
+   
+   <!-- to read list 조회 -->
+   <select id="selectToReadList" resultMap="toReadList">
+      SELECT TO_READ_LIST_CODE
+         , TO_READ_TITLE
+         , IS_DONE
+      FROM TO_READ_LIST
+      WHERE MEM_ID = #{memId}
+   </select>
+   
+   <!-- to read list 추가 -->
+   <insert id="insertToReadList">
+      INSERT INTO TO_READ_LIST
+      VALUES (
+          (SELECT 'TO_READ_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(TO_READ_LIST_CODE, 9, 9))), 0) + 1, 3, '0') 
+          FROM TO_READ_LIST
+          ), #{toReadTitle}
+          , #{memId}
+          , 'N'
+         )
+   </insert>
+   
+   <delete id="deleteToReadList">
+      DELETE FROM TO_READ_LIST
+      WHERE TO_READ_LIST_CODE = #{toReadListCode}
+   </delete>
+   <!-- 독서플래너 - 책 검색하기 -->
+   <select id="selectBookPlanerSearch" resultMap="bookMapper.book">
+      SELECT BOOK_CODE
+         , TITLE
+         , WRITER
+         , BK_IMG
+      FROM BOOK
+      WHERE 1=1
+      <if test="title != null and !title.equals('')">
+         AND UPPER(TITLE) LIKE UPPER('%'||#{title}||'%')
+      </if>
+       <if test="writer != null and !writer.equals('')">
+          AND UPPER(WRITER) LIKE UPPER('%'||#{writer}||'%')
+       </if>
+   </select>
+   
+   <!-- 완독도서 독서플래너 등록 -->
+   <insert id="insertBookPlaner">
+      INSERT INTO BOOK_COMPLIT (
+         COMPLIT_CODE
+         , BOOK_CODE
+         , MEM_ID
+         , COMPLIT_REVIEW
+      ) VALUES (
+         (SELECT 'COMPLIT_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(COMPLIT_CODE, 9, 4))), 0) + 1, 3 ,'0') FROM BOOK_COMPLIT
+         ), (SELECT BOOK_CODE 
+                   FROM BOOK
+                   WHERE TITLE = #{title}
+                   AND WRITER = #{writer}
+           ), #{memId}
+           , #{complitReview}
+      )
+   </insert>
+
+   <!-- 독서 플래너 상세조회 -->
+   <select id="selectBookPlanerDetail" resultMap="complit">
+      SELECT C.COMPLIT_CODE
+         , C.COMPLIT_DATE
+         , C.COMPLIT_REVIEW
+         , B.BOOK_CODE
+         , B.TITLE
+         , B.WRITER
+      FROM BOOK_COMPLIT C, BOOK B
+      WHERE C.BOOK_CODE = B.BOOK_CODE
+      AND C.MEM_ID = #{memId}
+      AND C.BOOK_CODE = #{bookCode}
+      AND C.COMPLIT_CODE = #{complitCode}
+   </select>
+   
+   <!-- 독서 플래너 삭제 -->
+   <delete id="deleteBookPlaner">
+      DELETE BOOK_COMPLIT 
+      WHERE COMPLIT_CODE = #{complitCode}
+   </delete>
+   
+   <!-- 독서 플래너 수정 -->
+   <update id="updateBookPlaner">
+      UPDATE BOOK_COMPLIT 
+      SET COMPLIT_REVIEW = #{complitReview} 
+      WHERE COMPLIT_CODE = #{complitCode}
+   </update>
+   
+   <!--/////////////////////////////북클럽//////////////////////////////////////  -->
+   <!-- 북클럽 조회 -->
+   <select id="selectMyBookClub" resultMap="clubMapper.club">
+      SELECT CLUB_CODE
+      		, CLUB_NAME
+      		, (SELECT COUNT(MEM_ID)
+		    	FROM BOOK_MEMBER 
+		    	WHERE CLUB_CODE = BOOK_CLUB.CLUB_CODE) AS CLUB_NUMBER_PEOPLE
+		    , CLUB_HEAD_CNT
+      FROM BOOK_CLUB
+      WHERE CLUB_CODE = 
+         (SELECT CLUB_CODE 
+         FROM BOOK_MEMBER 
+         WHERE MEM_ID = #{memId})
+   </select>
+   
+   <!-- 북클럽 예약 조회 -->
+   <select id="selectMyBookClubApply" resultMap="clubMapper.apply">
+      SELECT BCA.CLUB_CODE
+         , CLUB_APPLY_CODE
+         , TO_CHAR(CLUB_APPLY_DATE, 'YYYY/MM/DD') AS CLUB_APPLY_DATE
+         , BC.CLUB_NAME
+         , BCA.MEM_ID
+      FROM BOOK_CLUB_APPLY BCA , BOOK_CLUB BC
+      WHERE BCA.CLUB_CODE = BC.CLUB_CODE
+      AND BCA.MEM_ID = #{memId}
+   </select>   
+   
+   <!-- 북클럽 신청 취소 -->
+   <delete id="deleteMyBookClubApply">
+      DELETE BOOK_CLUB_APPLY
+      WHERE MEM_ID = #{memId}
+   </delete>
+   
+     <!-- ///////////////////// 도서 대여 관리 ////////////////////////////// -->
+   <!-- 예약시 rsvCnt 업데이트 -->
+   <update id="updateRsvCnt">
+      UPDATE BOOK_MEMBER
+      SET RSV_CNT=RSV_CNT+1
+      WHERE MEM_ID =#{memId}
+   </update>
+   
+   <!-- 예약 취소 시  rsvCnt 업데이트 -->
+   <update id="updateCancelRsvCnt">
+      UPDATE BOOK_MEMBER
+      SET RSV_CNT=RSV_CNT-1
+      WHERE MEM_ID =#{memId}
+   </update>
+   
+   <!-- 대여시 brCnt,rsvCnt 업데이트 -->
+   <update id="updateBrCntPlus">
+      UPDATE BOOK_MEMBER
+      SET BR_CNT=BR_CNT+1, RSV_CNT=RSV_CNT-1
+      WHERE MEM_ID = #{memId}
+   </update>
+   
+   <!-- 멤버별 limitDate 값 조회 -->
+   <select id="selectLimitDate" resultMap="member">
+         SELECT LIMIT_DATE
+         FROM BOOK_MEMBER
+         WHERE MEM_ID=#{memId}
+   </select>
+   
+   <!-- 반납 시 brCnt 업데이트 -->
+   <update id="updateBrCntMinus">
+      UPDATE BOOK_MEMBER
+      SET BR_CNT=BR_CNT-1
+      WHERE MEM_ID = #{memId}
+   </update>
+   
+   <!-- isOd 업데이트 -->
+   <update id="updateIsOdMem">
+      UPDATE BOOK_MEMBER
+      SET IS_OD = 'Y'
+      WHERE MEM_ID IN (SELECT MEM_ID
+                  FROM BORROW
+                  WHERE STATUS=1)
+   </update>
+   
+   <!-- 대여 제한 해제 -->
+   <update id="updateClearLimit">
+        UPDATE BOOK_MEMBER
+         SET IS_OD = 'N', LIMIT_DATE =''
+         WHERE IS_OD = 'Y'
+         AND LIMIT_DATE IS NOT NULL
+         AND TO_CHAR(LIMIT_DATE, 'YYYY/MM/DD') &lt; TO_CHAR(SYSDATE, 'YYYY/MM/DD')
+   </update>
+   
+   <!-- 연체 시 대여제한일 추가 -->
+   <update id="updateLimitDate">
+      UPDATE BOOK_MEMBER
+      SET LIMIT_DATE = #{limitDate}
+      WHERE MEM_ID = #{memId}
+   </update>
+   
+   <!-- 예약 제한 정보 조회 -->
+   <select id="selectRsvInfo" resultMap="member">
+      SELECT BR_CNT, IS_OD, RSV_CNT
+      FROM BOOK_MEMBER
+      WHERE MEM_ID = #{memId}
+   </select>
+   
+   
+
+</mapper>
+

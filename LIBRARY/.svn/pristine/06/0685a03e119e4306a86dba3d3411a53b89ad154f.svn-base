@@ -1,0 +1,196 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+.container{
+	text-align: center;
+	width: 800px;
+}
+.boardDiv table{
+	border: 1px solid black;
+	border-collapse: collapse;
+	width: 800px;
+	margin-top: 10px;
+	text-align: center;
+	margin-bottom: 30px;
+}
+.boardDiv table td{
+	border: 1px solid black;
+}
+.clubInfo{
+	text-align: left;
+	margin-bottom: 20px;
+}
+.memListTable{
+	text-align: center;
+}
+table{
+	width: 800px;
+}
+.subDiv{
+	margin-left: 100px;
+}
+img{
+width: 40px;
+height : 40px;
+border-radius: 70%;
+overflow : hidden;
+
+}
+</style>
+</head>
+<body>
+<div class="row">
+	<div class="col-2">
+		<div class="subDiv">
+	북클럽조회<br>
+	<c:if test="${sessionScope.loginInfo.clubAdmin eq 'Y' }">
+		<a href="/clubAdmin/clubAdmin?clubCode=${sessionScope.loginInfo.clubCode }">북클럽관리</a><br>
+	</c:if> 
+	<a href="/admin/memberManage">회원관리</a><br>
+	
+		<span type="button" onclick="message('${sessionScope.loginInfo.memId}');">
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+		  		<path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+			</svg>
+		</span>
+</div>
+	</div>
+	<div class="col-10 mb-3">
+		<div class="row">
+			<div class="col-8">
+				<div class="col-8">
+					<table class="table table-hover">
+						<tr>
+							<c:forEach items="${memList }" var="mem" >
+									<td>
+										<img alt="" src="/resources/images/member/${mem.memImage }" >
+										${mem.memName }
+							</c:forEach>
+						</tr>
+					</table>
+				</div>
+							모임명 : ${club.clubName } <br>
+							모임 인원수 : ${club.clubHeadCnt }<br>
+							모임장 : ${club.memName }<br>
+							모임소개 : ${club.clubIntro }
+				
+			</div>
+			<div class="col-2">
+				<table class="table table-hover">
+					<c:forEach items="${memList }" var="mem" >
+						<tr>
+							<td>
+								<img alt="" src="/resources/images/member/${mem.memImage }" >
+								${mem.memName }
+								${mem.bookComplitCnt }
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-8">
+				<div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-bottom: 20px;">
+						<c:if test="${sessionScope.loginInfo.clubCode eq club.clubCode  }">
+							<button type="button" class="btn btn-success btn-sm" onclick="location.href='/club/clubBoardWrite?clubCode=${club.clubCode}';">글쓰기</button>
+						</c:if>
+						<c:if test="${sessionScope.loginInfo.clubAdmin eq 'Y' and sessionScope.loginInfo.clubCode eq club.clubCode}">
+							<button type="button" class="btn btn-success btn-sm" onclick="location.href='/club/clubDetailUpdate?clubCode=${club.clubCode}';">수정</button>
+						</c:if>
+					</div>
+				<div class="mb-3">
+				<table class="table table-striped table-hover table-border text-center">
+				<colgroup>
+					<col width="5%">
+					<col width="*">
+					<col width="10%">
+					<col width="20%">
+					<col width="10%">
+					<thead>
+					<tr>
+						<th scope="col">No</th>
+						<th scope="col">제목</th>
+						<th scope="col">작성자</th>
+						<th scope="col">날짜</th>
+						<th scope="col">조회수</th>
+					</tr>
+					</thead>
+					<tbody>
+					<c:choose>
+						<c:when test="${not empty boardList}">
+							<c:forEach items="${boardList }" var="boardInfo" varStatus="status">
+								<tr>
+									<td>${clubBoardVO.totalCnt - boardInfo.rowNum + 1 }</td>
+									<c:choose>
+										<c:when test="${sessionScope.loginInfo.clubCode eq boardInfo.clubCode }">
+											<td><a href="/club/clubBoardDetail?cbBoardNum=${boardInfo.cbBoardNum }&&clubCode=${boardInfo.clubCode}">${boardInfo.cbBoardTitle } (${boardInfo.cbCmtCount })</a></td>
+										</c:when>
+										<c:otherwise>
+											<td><a href="" onclick="cbDetail();">${boardInfo.cbBoardTitle } (${boardInfo.cbCmtCount })</a></td>
+										</c:otherwise>
+									</c:choose>
+									<td>${boardInfo.memName }</td>
+									<td>${boardInfo.cbBoardDate }</td>
+									<td>${boardInfo.cbReadCnt }</td>
+								</tr>
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+							<tr>
+								<td colspan="5">
+									등록된 게시글이 없습니다.
+								</td>
+							</tr>
+						</c:otherwise>
+					</c:choose>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<nav aria-label="Page navigation example">
+					<ul class="pagination pagination-sm justify-content-center">
+						<li class="page-item <c:if test="${!clubBoardVO.prev }">disabled</c:if>">
+						<a class="page-link" href="/club/clubDetail?nowPage=${clubBoardVO.beginPage - 1 }&&clubCode=${clubBoardVO.clubCode }"
+							aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+						</a></li>
+						<c:forEach begin="${clubBoardVO.beginPage }" end="${clubBoardVO.endPage }" var="pageIndex">
+								<li class="page-item <c:if test="${clubBoardVO.nowPage eq pageIndex }">active</c:if>"><a class="page-link" 
+								href="/club/clubDetail?nowPage=${pageIndex }&&clubCode=${clubBoardVO.clubCode }">${pageIndex }</a></li>
+							</c:forEach>
+						<li class="page-item <c:if test="${!clubBoardVO.next }">disabled</c:if>"><a class="page-link" href="/club/clubDetail?nowPage=${clubBoardVO.endPage + 1 }&&clubCode=${clubBoardVO.clubCode }"
+							aria-label="Next"> <span aria-hidden="true">&raquo;</span></a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-6">	
+				<form action="/club/clubDetail" method="post" id="searchForm">
+				<input type="hidden" value="1" id="nowPage" name="nowPage">
+				<input type="hidden" name="clubCode" value="${clubBoardVO.clubCode }">
+					<select id="sort" name="sort" <c:if test="${clubBoardVO.sort eq 'MEM_NAME'}">selected</c:if>>
+						<option value="CB_BOARD_TITLE">제목</option>
+						<option value="MEM_NAME">작성자</option>
+					</select>
+					<input type="text" name="keyword" value="${clubBoardVO.keyword }">
+					<button type="submit" class="btn btn-secondary">검색</button>
+				</form>
+			</div>
+		</div>	
+	</div>
+</div>
+
+<script type="text/javascript" src="/resources/js/club/club_detail.js"></script>
+</body>
+</html>
