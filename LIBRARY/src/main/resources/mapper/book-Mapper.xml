@@ -343,12 +343,29 @@
 	<select id="selectRcdBook" resultMap="book">
 		SELECT BOOK_CODE
 		    , TITLE
-		    , BK_IMG
+			, WRITER
+			, ISBN
+			, BK_CONTENT
+			, PUBLISHER
+			, AREA
+			, BK_IMG
+			, STATUS
+			, PUB_DATE
+			, KEYWORD
 		    , RCD_CNT
+		    
 		FROM (
 		        SELECT BOOK_CODE
 		            , TITLE
-		            , BK_IMG
+					, WRITER
+					, ISBN
+					, BK_CONTENT
+					, PUBLISHER
+					, AREA
+					, BK_IMG
+					, STATUS
+					, PUB_DATE
+					, KEYWORD
 		            , RCD_CNT
 		            , DENSE_RANK() OVER(ORDER BY RCD_CNT DESC) AS MRCD
 		        FROM BOOK
@@ -362,13 +379,27 @@
 	<select id="selectNewBook" resultMap="book">
 	SELECT BOOK_CODE
 	    , TITLE
-	    , BK_IMG
-	    , INPUT_DATE
+		, WRITER
+		, ISBN
+		, BK_CONTENT
+		, PUBLISHER
+		, AREA
+		, BK_IMG
+		, STATUS
+		, PUB_DATE
+		, KEYWORD
 	FROM (
 	        SELECT BOOK_CODE
 	            , TITLE
-	            , BK_IMG
-	            ,  INPUT_DATE
+				, WRITER
+				, ISBN
+				, BK_CONTENT
+				, PUBLISHER
+				, AREA
+				, BK_IMG
+				, STATUS
+				, PUB_DATE
+				, KEYWORD
 	            , DENSE_RANK() OVER(ORDER BY INPUT_DATE DESC) AS RECENT
 	        FROM BOOK
 	        WHERE IS_DELETE='N'

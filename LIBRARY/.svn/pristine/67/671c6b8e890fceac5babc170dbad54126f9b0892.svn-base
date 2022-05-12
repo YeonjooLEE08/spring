@@ -1,0 +1,29 @@
+@charset "UTF-8";
+.container{
+   width: 80%;
+   margin: 0px auto;
+}
+.subTit {
+    border-bottom: 1px solid #dddddd;
+    padding: 15px 0px 7px 10px;
+    margin-bottom: 30px;
+ 
+}
+.subTit .tit{
+	font-weight: 900;
+    font-size: 1.8rem;
+    font: #4D4D4D;
+}
+.subTit .line_map {
+    float: right;
+    width: 45%;
+    font-size: 0.8rem;
+    text-align: right;
+}
+
+.subTit .sub_tit {
+    width: 45%;
+    font-size: 0.8rem;
+    text-align: left;
+    display: inline-block;
+}

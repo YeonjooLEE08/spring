@@ -9,13 +9,59 @@
 <title>Insert title here</title>
 <link href="/resources/css/common/infoBar.css" rel="stylesheet">
 <link href="/resources/css/book/searchBar.css" rel="stylesheet">
-<link href="/resources/css/book/bookList.css" rel="stylesheet">
 <style type="text/css">
 
 img:hover{
 	opacity: 0.7;
 }
+.bookList{
+	padding: 15px;
+	border: 1px dotted #dddddd;
+	margin-bottom: 20px;
+}
+.bookList table{
+	width: 100%;
+	margin-bottom: 20px;
+}
+.bookList tr, td{
 
+	padding: 5px;
+}
+
+.bookList .title{
+	font-size: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	height: auto; 
+	font-weight: 800;
+}
+.bookList .img{
+	width: 150px;
+}
+.bookList .tit{
+	width: 100px;
+	height: auto; 
+	font-weight: 500;
+}
+.bookList img{
+	border: 1px solid #dddddd;
+	padding: 5px; 
+	
+}
+.bookList .location{
+	width: 100px;
+	height: auto; 
+	text-align: left;
+	padding-top:30px;
+	padding-bottom:0px;
+	padding-left: 15px;
+	padding-right: 20px; 
+	font-weight: 500;
+}
+.bookList .loc{
+	padding-top:30px;
+	padding-bottom:0px;
+}
 </style>
 </head>
 <body>
