@@ -385,12 +385,19 @@ public class BookController {
 		
 		return "book/reg_hope_book";
 	}
+	//희망도서 신청 안내
+	@GetMapping("/hopeBookInfo")
+	public String info_hope_book() {
+		
+		return "book/info_hope_book";
+	}
+	
 	
 	//희망도서  등록
 	@PostMapping("/regHopeBook")
 	public String regHopeBook(Model model, HopeBookVO hbVO) {
 		bookService.insertHopeBook(hbVO);
-		return "book/fin_hope_book";
+		return "book/reg_hope_book";
 	}
 
 	//희망도서 목록 (ADMIN)

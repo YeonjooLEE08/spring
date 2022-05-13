@@ -15,9 +15,10 @@
 
  
  
+<a href="/book/hopeBookInfo">희망도서 신청 안내</a>
 <a href="/book/hopeBookForm">희망도서신청</a>
 <a href="/book/bookListU">책리스트확인용</a>
-<a href="/book/selectNewBook1">희망도서 더보기</a>
+<a href="/book/selectNewBook1">신간도서 더보기</a>
 <a href="/book/selectRcdBook1">추천도서 더보기</a>
 <!-- ////////// 쿼리 짜야 됨 //////////////////-->
 <!-- <a href="/book/selectMostBrCnt">대출베스트</a>  -->

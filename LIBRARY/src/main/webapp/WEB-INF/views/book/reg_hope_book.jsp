@@ -13,91 +13,216 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link href="/resources/css/common/infoBar.css" rel="stylesheet">
 <style type="text/css">
-	.hpBookForm{
-		display: flex;
-		flex-direction: column;
-	}
+.btnDiv{
+	padding-top:10px;
+	padding-left:25px;
+	padding-right:10px;
+	text-align:right;
+}
+
+.btnDiv button{
+		height: 40px;
+}
+
+
+.hpBookForm{
+	width: 100%;
+	padding: 20px;
+	border: 1px solid #dddddd;
+}
+
+.hpBookForm table {
+	width: 100%;
+	padding: 15px;
+}
+.hpBookForm button{
+	margin-left: 15px;
+	height: 40px;
+}
+ .hpBookForm .form td:first-child{
+	font-weight:600;
+	width:10%;
+}
+.hpBookForm td, .hpBookForm tr{
+	padding:15px;
 	
-	.resultHopeBook .result-row-thead, .resultHopeBook .result-row-tbody,
-	.resultHopeBook .result-row-tbody.result{
-		display: flex;
-		flex-direction: row;
-		justify-content: space-around;
-		
-	}
-	.resultHopeBook.result-row-tbody{
-		overflow:auto;
-		height: 20%;
-		overflow:scroll;
-		height: 150px; 
-		width:75%;
-	}
+} 
+.hpBookForm input {
+	height: 40px;
+	width:40%;
+	border-radius: 3px;
+}
+.resultHopeBook .result-row-tbody1 div{
+	height: 90px;
+	width:25%; 
+	display: inline-block;
+	text-align: center;
+	padding-top: 40px;
+	
+}
 
 
+
+.resultHopeBook .result-row-tbody1 .img{
+	padding-top: 0px;
+	padding-bottom: 20px;
+}
+
+.resultHopeBook{
+	width: 100%;
+	border:1px solid #dddddd;
+	margin: 0 auto;
+}
+.resultHopeBook.result-row-thead{
+	flex-direction: row; 
+	dispaly: flex;
+	padding: 20px;
+	border-bottom: 1px solid #dddddd;
+}
+
+.resultHopeBook .result-row-tbody{
+	padding: 20px;
+}
+.resultHopeBook .result-row-tbody1{
+	border-bottom: 1px solid #dddddd;
+	padding-bottom: 10px;
+}
+
+.searchBar{
+text-align: center;
+border: 1px solid #dddddd;
+padding: 10px;
+background-color: #E7EDE4;
+margin-bottom: 20px;
+	
+}
+
+.searchBar input{
+	outline: 3px solid #16784B;
+	border: 1px solid #16784B;
+	border-radius: 3px;
+	width: 50%;
+	height: 50px;
+	margin-left: 10px;
+	margin-top:10px;
+}
+.searchBar  button{
+	position: relative;
+    border: none;
+    display: inline-block;
+    padding: 13px 30px;
+    margin-left: 10px;
+}
+select{
+   border: none;
+   outline: none;
+   width: 80px;
+   font-weight: 200;
+   background: transparent;
+   color: black;
+}
+
+.active{
+	background-color: #dddddd;
+}
+.modal{
+	text-align: center;
+}
+#searchBook .modal-content {
+	max-height: 800px;
+	width: 800px;
+}
 </style>
 </head>
 <body>
-<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-
-			
-	<div class="searchHopeBook">
-		<select id="searchSub">
-			<option value="title">제목</option>
-			<option value="writer">작가</option>
-		</select>
-		<input id="bookName" type="text">
-		<button id="search">검색</button>
-	</div>		
-	
-	<div class="resultHopeBook">
-		<div class="result-row-thead" style="width:75%; flex-direction: row;">
-			<div>표지</div>
-			<div>제목</div>
-			<div>작가</div>
-			<div>출판사</div>
-		</div>
-		<div class="result-row-tbody" id ="result-row-tbody" style="overflow:scroll; height:150px; width:75%; flex-direction: row; dispaly: flex;">
-			 <div class="result" id ="result" style="width:75%; flex-direction: row;"></div> 
-		</div>
-	</div>
-	
-	<form action="/book/regHopeBook" method="post">
-		<div class="hpBookForm">
-			<table>
-				<tr>
-					<td>신청인</td>
-					<td> ${sessionScope.loginInfo.memName }
-						<input type="hidden" name="memId" value="${sessionScope.loginInfo.memId }">
-					</td>
-					<td>신청일</td>
-					<td><%= sf.format(nowTime) %></td>
-				</tr>
-				<tr>
-					<td>제목</td>
-					<td><input type="text" name="title" ></td>
-				</tr>
-				<tr>
-					<td>저자</td>
-					<td><input type="text"  name="writer" ></td>
-				</tr>
-				<tr>
-					<td>출판사</td>
-					<td><input type="text"  name="publisher" ></td>
-				</tr>
-			</table>
-			<div>
-				<button type="submit">신청하기</button>
+<div class="container">
+	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+		<div class="subTit">
+	      <div class="line_map">홈 > 자료검색 > 희망도서신청 </div>
+	      <div class="tit">희망도서신청</div>
+	   </div>
+	   <form action="/book/regHopeBook" id ="hpBookForm" method="post">
+			<div class="hpBookForm">
+				<table class="form">
+					<tr>
+						<td>신청인</td>
+						<td> ${sessionScope.loginInfo.memName }
+							<input type="hidden" name="memId" value="${sessionScope.loginInfo.memId }">
+						</td>
+					<tr>
+						<td>신청일</td>
+						<td><%= sf.format(nowTime) %></td>
+					</tr>
+					<tr>
+						<td>제목</td>
+						<td><input type="text" name="title" >
+							<button type="button" data-toggle="modal" data-target="#searchBook" class="btn btn-success btn-sm justify-content-md-end" onclick="showModal();">책 검색하기</button>
+						</td>
+					</tr>
+					<tr>
+						<td>저자</td>
+						<td><input type="text"  name="writer" ></td>
+					</tr>
+					<tr>
+						<td>출판사</td>
+						<td><input type="text"  name="publisher" ></td>
+					</tr>
+				</table>
 			</div>
-		</div>
-	</form>
+			<div class="btnDiv">
+				<button id="submitHpBook" class="btn btn-success btn-sm justify-content-md-end" onclick="submit();" >신청하기</button>
+			</div>
+		</form>
+		
+	
+<div class="modal fade" id="searchBook" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="myModalLabel">희망 도서 검색</h5>
+	      </div>
+	      <div class="modal-body">
+			<div class="searchBar">
+				<select id="searchSub">
+					<option value="title">제목</option>
+					<option value="writer">작가</option>
+				</select>
+				<input id="bookName" type="text">
+				<button id="search" class="btn btn-success btn-sm justify-content-md-end">검색</button>
+			</div>		
+					
+			<div class="resultHopeBook">
+				<div class="result-row-thead" >
+					<table style="width:100%; text-align: center; ">
+						<tr>
+							<td>표지</td>
+							<td>제목</td>
+							<td>작가</td>
+							<td>출판사</td>
+						</tr>
+					</table>
+				</div>
+				<div class="result-row-tbody" id ="result-row-tbody" style="overflow:scroll; height:200px; flex-direction: row; dispaly: flex;">
+					 <div class="result" id ="result" ></div> 
+				</div>
+				
+				
+			</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" id="closeModalBtn" data-dismiss="modal">닫기</button>
+	        <button type="button" id="searchForm" class="btn btn-success justify-content-md-end" >신청</button>
+	      </div>
+	    </div>
+	  </div>
+ </div>	
+	
+	
 
-
-
-
-
-
-<script type="text/javascript" src="/resources/js/book/reg_hope_book.js?ver=46"></script>
+</div>
+<script type="text/javascript" src="/resources/js/book/reg_hope_book.js?ver=50"></script>
 </body>
 <meta name="referrer" content="unsafe-url" />
 </html>

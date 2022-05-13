@@ -16,6 +16,6 @@ function regBook(){
 	}	
 	
 	//submit
-	var formTag = document.getElementById('regBookForm');
+	var formTag = document.getElementById('hpBookForm');
 	formTag.submit();
 }
