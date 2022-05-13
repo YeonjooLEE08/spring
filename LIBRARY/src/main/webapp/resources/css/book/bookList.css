@@ -5,7 +5,7 @@
 	border: 1px dotted #dddddd;
 	margin-bottom: 20px;
 }
-table{
+.bookList table{
 	width: 100%;
 	margin-bottom: 20px;
 }
@@ -59,10 +59,45 @@ table{
 	padding-bottom:0px;
 }
 
-.bookDetail .title{
+/* ////////////////상세보기 ////////////////////  */
+.bkDetail .title{
 	border: 1px solid #dddddd;
 	padding: 10px;
 	background-color: #E7EDE4;
 	margin-bottom: 30px;
 	font-size: 23px;
+}
+
+.bkDetail{
+	display: inline-block;
+}
+.bkDetail .tit{
+	width: 100px;
+	height: auto; 
+	font-weight: 600;
+	padding-left: 15px;
+}
+
+.bkDetail img{
+	border: 1px solid #dddddd;
+	padding: 5px; 
+}
+
+.bkDetail .img{
+	padding-top: 5px;
+	
+}
+
+.bkDetail .info{
+	padding-top:0px;
+	padding-left: 15px;	
+	padding-bottom:30px;
+}
+.bkDetail .imgT{
+	float: left;
+	width: 40%;
+}
+.bkDetail .infoT{
+	float: right;
+	width: 60%;
 }
