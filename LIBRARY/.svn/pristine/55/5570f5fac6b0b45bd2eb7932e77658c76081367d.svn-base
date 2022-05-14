@@ -1,0 +1,125 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="/resources/css/member/menu.css" rel="stylesheet">
+
+<style type="text/css">
+
+.row{
+    width: 100%;
+}
+
+
+}
+</style>
+</head>
+<body>
+<div class="top-container">
+	<div class="header-loginBox">
+	<div class="header-weatherBox">
+		<div class="header-loginBoxDiv" id="weather">
+			<span></span>
+			<span class="weatherIcon"></span>
+			<span></span>
+			&nbsp;&nbsp;&nbsp;책 읽기 좋은 날씨예요😊
+		</div>
+	</div>
+	<c:if test="${empty sessionScope.loginInfo}">
+	<div class="header-loginBoxDiv">
+		<div class="header-loginBoxDiv" onclick="location.href='/member/login';">로그인</div>
+		<div class="header-loginBoxDiv" onclick="location.href='/member/join';">회원가입</div>
+	</div>
+	</c:if>
+	</div>		
+		
+	<div class="header-mainBox">
+		<div class="nav-logoDiv"><a href="/admin/test"><h1>늘봄 도서관</h1></a></div>
+		
+		<c:if test="${not empty sessionScope.loginInfo }">
+		<div class="header-profile">
+			<nav class="header-nav">
+			  <input type="checkbox" class="nav__cb" id="menu-cb"/>
+			  <div class="nav__content">
+			    <ul class="nav__items">
+			      <li class="nav__item">
+			        <span class="nav__item-text" onclick="location.href='/member/myPageDetail?memId=${sessionScope.loginInfo.memId}'">
+			          My Page
+			        </span>
+			      </li>
+			      <li class="nav__item">
+			        <span class="nav__item-text" onclick="location.href='/cart/cartView';" title="장바구니">
+			          <i class="fa-solid fa-cart-shopping"></i>
+			        </span>
+			      </li>
+			      <li class="nav__item">
+			        <span class="nav__item-text">
+			          플래너?
+			        </span>
+			      </li>
+			      <li class="nav__item">
+			        <span class="nav__item-text" onclick="location.href='/member/logout';" title="로그아웃">
+			          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+			        </span>
+			      </li>
+			    </ul>
+			  </div>
+			  <span class="nav__btn" >
+			  	<img src="/resources/images/member/${loginInfo.memImage }">
+			  </span>
+			  <label class="nav__btn" for="menu-cb"></label>
+			</nav>
+		</div>
+		</c:if>
+	</div>
+	<div class="nav-main-menu">
+		<ul>
+			<li><a href="/admin/libraryInfo">도서관소개</a></li>
+			<li><a href="/book/bookListU">자료검색</a></li>
+			<li>도서관이용</li>
+			<li>참여마당
+				<ul>
+					<li><a href="/board/ntBoardList">공지사항</a></li>
+					<li><a href="/otherB/freeBoard">자유게시판</a></li>
+					<li><a href="/otherB/qnaBoard">Q&A</a></li>
+				</ul>
+			</li>
+			<li>
+			<a href="/item/itemList">Goods</a></li>
+			<li>
+			<a href="/club/clubList">북클럽</a></li>
+			<c:if test="${sessionScope.loginInfo.isAdmin eq 'Y' }" > 
+			<li>
+				<a href="/admin/adminMenu">관리자메뉴</a>
+			</li>
+			</c:if>
+		</ul>
+	</div>
+</div>
+<nav class="toRead-nav">
+  <div class="menu-btn">
+  	TO<br>READ<br>LIST
+  </div>
+  <div class="nav-links">
+  <div class="bookPlaner-div">
+		<span>독서 계획 & 메모</span>
+		<form action="" id="toread-form">
+			<input type="text" required>
+			<ul id="toread-list">
+			</ul>
+			<input type="hidden" name="memId" value="${loginInfo.memId }">
+		</form>
+	</div>
+  </div>
+</nav>
+
+
+<script type="text/javascript" src="/resources/js/member/menu.js?ver=6"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js"></script>
+
+</body>
+</html>

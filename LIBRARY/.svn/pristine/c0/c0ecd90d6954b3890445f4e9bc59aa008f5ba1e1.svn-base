@@ -1,0 +1,109 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="/resources/css/common/side.css" rel="stylesheet">
+<style type="text/css">
+.myPage-simple{
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 1rem;
+	border-radius: 10px;
+	color: #16784B;
+	font-size: 1rem;
+	text-align: center;
+}
+.myPage-simple img{
+	width: 200px;
+	height: 200px;
+	object-fit:cover;
+	border-radius: 100%;
+	margin-bottom: 1rem;
+}
+.simpleMyBook{
+	display: flex;
+	flex-direction: column;
+	border: 1px solid #28D987;
+	border-radius: 10px;
+	margin: 1.8rem 0;
+	padding: 2px 0;
+	box-shadow: 1px 1px 4px 2px #c7e2d1;
+}
+.simpleMyBook > div{
+	display: flex;
+	justify-content: space-evenly;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+	<div class="side-box">
+		<div class="side-box-div">
+		
+			<div class="myPage-simple">
+				<div>
+					<img alt="" src="/resources/images/member/${loginInfo.memImage }">
+				</div>
+				<div>${loginInfo.memName }님 반가와요</div>
+				<div class="simpleMyBook">
+					<div>
+						<div>대여 도서</div><div>${loginInfo.brCnt }권</div>
+					</div>
+					<div>
+						<div>연체 도서</div><div>${loginInfo.brCnt }권</div>
+					</div>
+				</div>
+			</div>
+				<table>
+					<tr>
+						<td>
+							<a href="/member/myPageDetail">
+						My page</a></td>
+					</tr>
+					<tr>
+						<td class="bubbly-button">
+							<a href="/member/myPageDetail">
+						내 정보 상세조회</a></td>
+					</tr>
+					<tr>
+						<td>
+						<a href="/member/reserveListU?memId=${loginInfo.memId }">
+						예약목록 상세조회
+						</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+						<a href="/member/borrowListU?memId=${loginInfo.memId }">
+						대출목록 상세조회
+						</a>
+						</td>
+					</tr>
+					<tr>
+						<td><a href='/order/orderList'>구매목록 상세조회</a></td>
+					</tr>
+					<tr>
+						<td>
+						<a href="/member/bookPlaner">
+						독서 플래너</a></td>
+					</tr>
+					<tr>
+						<td><a href="/member/selectBookClub?memId=${loginInfo.memId }">북클럽 조회</a></td>
+					</tr>
+					<tr>
+						<td><a href="/member/hopeBookListU?memId=${loginInfo.memId }">희망도서 신청</a></td>
+					</tr>
+				</table>
+			<div>
+				
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="/resources/js/member/my_page.js?ver=0"></script>
+</body>
+</html>

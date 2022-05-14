@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+	<definition name="baseLayout" template="/WEB-INF/views/template/template.jsp">
+		<put-attribute name="title" value="BOOK"/>	
+		<put-attribute name="menu" value="/WEB-INF/views/template/menu.jsp"/>
+		<put-attribute name="side" value=""/>
+		<put-attribute name="body" value=""/>
+		<put-attribute name="footer" value="/WEB-INF/views/template/footer.jsp" />
+	</definition>
+	
+	<!-- 도서 이용 -->
+	<definition name="book/*" extends="baseLayout">
+      <put-attribute name="side" value="/WEB-INF/views/template/book_menu.jsp" />
+      <put-attribute name="body" value="/WEB-INF/views/book/{1}.jsp"/>
+   </definition>
+   
+   <!-- 클럽 이용 -->
+	<definition name="club/*" extends="baseLayout">
+      <put-attribute name="side" value="/WEB-INF/views/template/club_menu.jsp" />
+      <put-attribute name="body" value="/WEB-INF/views/club/{1}.jsp"/>
+   </definition>
+	<!-- admin -->
+   <definition name="admin/*" extends="baseLayout">
+      <put-attribute name="side" value="/WEB-INF/views/template/admin_menu.jsp" />
+      <put-attribute name="body" value="/WEB-INF/views/admin/{1}.jsp"/>
+   </definition>
+	
+	<!-- 아이디 찾기 -->
+	<definition name="find/*" extends="baseLayout">
+		<put-attribute name="side" value="/WEB-INF/views/template/find_side.jsp"/>
+		<put-attribute name="body" value="/WEB-INF/views/member/find/{1}.jsp"/>
+	</definition>
+	
+	<!-- 마이페이지 관련 페이지 이동 정의 -->
+	<definition name="mypage/*" extends="baseLayout">
+		<put-attribute name="side" value="/WEB-INF/views/template/my_page.jsp" />
+		<put-attribute name="body" value="/WEB-INF/views/member/mypage/{1}.jsp"/>
+	</definition>
+	
+	<!-- 연주 Admin 메뉴 -->
+	<definition name="admin/*" extends="baseLayout">
+		<put-attribute name="side" value="/WEB-INF/views/template/admin_menu.jsp" />
+		<put-attribute name="body" value="/WEB-INF/views/admin/{1}.jsp"/>
+	</definition>
+
+	<definition name="*/*" extends="baseLayout">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
+	</definition>
+	
+
+	
+
+
+</tiles-definitions>
+
+

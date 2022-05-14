@@ -1,0 +1,51 @@
+@charset "UTF-8";
+
+.sideBodyDiv{
+	display: flex;
+	justify-content: center;
+}
+.container{
+    margin-left: 6rem;
+}
+
+.side-box-div table, tr, td{
+	border-collapse: collapse;
+	border: 1px soilid black;
+}
+.myPageDetail{
+    margin-left: 3rem;
+}
+.side-box-div table td{
+	height: 2.5rem;
+	padding-left: 1rem;
+}
+
+@keyframes tdhover{
+	from{
+		width: 0;
+		background-color: white;
+		color: #16784B;
+	}
+	to{
+		width: 100%;
+		background-color: #16784B;
+		color: white;
+	}
+}
+.side-box-div table td:hover{
+	animation: tdhover 0.1s linear forwards;
+}
+a:hover{
+	color: inherit;
+} 
+
+
+.side-box{
+	width: 85%;
+	margin: 0px auto;
+}
+
+.side-box-div{
+	display: flex;
+	flex-direction: column;
+}

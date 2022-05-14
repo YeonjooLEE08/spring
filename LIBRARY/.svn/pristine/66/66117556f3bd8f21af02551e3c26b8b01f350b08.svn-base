@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+.statusBar{
+	text-align: center;
+	border: 1px solid #dddddd;
+	padding: 20px;
+	background-color: #E7EDE4;
+	margin-bottom: 20px;
+	font-size: 1.125rem;
+	font-weight: 600;
+}
+select{
+   border: none;
+   outline: none;
+   width: 100px;
+   font-size: 1.125rem;
+   font-weight: 200;
+   background: transparent;
+   color: black;
+}
+.modal-body input{
+	width: 80%;
+}
+.modal-body table{
+	width: 80%;
+}

@@ -1,0 +1,62 @@
+@charset "UTF-8";
+
+.bookList{
+	padding: 15px;
+	border: 1px dotted #dddddd;
+	margin-bottom: 20px;
+}
+.bookList table{
+	width: 100%;
+	margin-bottom: 20px;
+}
+.bookList tr, td{
+
+	padding: 5px;
+}
+
+.bookList .title{
+	font-size: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	height: auto; 
+	font-weight: 800;
+}
+.img{
+	width: 150px;
+}
+.bookList .tit{
+	width: 100px;
+	height: auto; 
+	font-weight: 500;
+}
+.bookList img{
+	border: 1px solid #dddddd;
+	padding: 5px; 
+}
+.bookList span.rank{
+    display: inline-block;
+    padding: 3px 5px 5px;
+    border: 1px solid #16784B;
+    background: #16784B;
+    color: white;
+    font-weight: bold;
+    margin-right:10px;
+    border-radius: 5px;
+	width: 25px;
+}
+.bookList .location{
+	width: 100px;
+	height: auto; 
+	text-align: left;
+	padding-top:30px;
+	padding-bottom:0px;
+	padding-left: 15px;
+	padding-right: 20px; 
+	font-weight: 500;
+}
+.bookList .loc{
+	padding-top:30px;
+	padding-bottom:0px;
+}
+
+/* ////////////////상세보기 ////////////////////  */

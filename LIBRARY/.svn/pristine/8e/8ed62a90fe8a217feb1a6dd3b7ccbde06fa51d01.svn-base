@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문을 mapper태그 안에 작성 -->
+<mapper namespace="bookMapper">
+ 
+	<resultMap type="com.kh.library.book.vo.BookCategoryVO" id="bookCate">
+		<id column="CATE_CODE" 		property="cateCode"/>
+		<result column="CATE_NAME" 	property="cateName"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.book.vo.BookVO" id="book">
+      <id column="BOOK_CODE"                	property="bookCode"/>
+      <result column="TITLE"             		property="title"/>
+      <result column="WRITER"          		  	property="writer"/>
+      <result column="ISBN"          		  	property="isbn"/>
+      <result column="KEYWORD"        		 	property="keyword"/>
+      <result column="BK_CONTENT"        		property="bkContent"/>
+      <result column="BK_PAGE"        			property="bkPage"/>
+      <result column="BK_SIZE"        			property="bkSize"/>
+      <result column="PUBLISHER"            	property="publisher"/>
+      <result column="INPUT_DATE"          		property="inputDate"/>
+      <result column="BK_STOCK"          		property="bkStock"/>
+      <result column="AREA"          			property="area"/>
+      <result column="BK_IMG"         			property="bkImg"/>
+      <result column="RSV_CNT"             		property="rsvCnt"/>
+      <result column="RCD_CNT"             		property="rcdCnt"/>
+      <result column="STATUS"             		property="status"/>
+      <result column="PUB_DATE"             	property="pubDate"/>
+      <result column="CATE_CODE"             	property="cateCode"/>
+      <result column="CATE_NAME"             	property="cateName"/>
+      <result column="SEARCH_SUB"         		property="searchSub"/>
+      <result column="SEARCH_TXT"         		property="searchTxt"/>
+      <result column="MEM_ID"					property="memId"/>
+      <result column="IS_DELETE"				property="isDelete"/>
+   </resultMap>
+   
+   <resultMap type="com.kh.library.book.vo.BookVO" id="searchBook">
+   		<id column="SEARCH_CODE" 				property="searchCode"/>
+   		<result column="SEARCH_SUB" 			property="searchSub"/>
+   		<result column="SEARCH_TXT" 			property="searchTxt"/>
+   </resultMap>
+   
+	<resultMap type="com.kh.library.book.vo.BookImgVO" id="bookImg">
+		<id column="BK_IMG_CODE" 				property="bkImgCode"/>
+		<result column="BK_ORIGIN_NAME" 		property="bkOriginName"/>
+		<result column="BK_AT_NAME" 			property="bkAtName"/>
+		<result column="BOOK_CODE" 				property="bookCode"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.book.vo.ReserveVO" id="reserve">
+		<id column="RSV_CODE" 				property="rsvCode"/>
+		<result column="BOOK_CODE" 				property="bookCode"/>
+		<result column="TITLE" 				property="title"/>
+		<result column="ISBN" 				property="isbn"/>
+		<result column="MEM_ID" 				property="memId"/>
+		<result column="RSV_DATE" 				property="rsvDate"/>
+		<result column="ROWNUM" 					property="rowNum"/>
+	</resultMap>
+	
+								<!-- 도서 대여 -->
+	<resultMap type="com.kh.library.book.vo.BorrowVO" id="borrow">
+		<id column="BR_CODE"				property="brCode"/>
+		<result column="MEM_ID"				property="memId"/>
+		<result column="ISBN"				property="isbn"/>
+		<result column="BR_DATE"			property="brDate"/>
+		<result column="RT_DATE"			property="rtDate"/>
+		<result column="STATUS"				property="status"/>
+		<result column="BOOK_CODE" 			property="bookCode"/>
+		<result column="TITLE" 				property="title"/>
+		<result column="SEARCH_SUB" 		property="searchSub"/>
+		<result column="ROWNUM" 				property="rowNum"/>
+	</resultMap>
+			
+				<!--///////// 희망도서 ///////////////  -->
+	<resultMap type="com.kh.library.book.vo.HopeBookVO" id="hopeBook">
+		<id column="HOPE_CODE"				property="hopeCode"/>
+		<result column="TITLE"  			property="title"/>
+		<result column="WRITER"  			property="writer"/>
+		<result column="PUBLISHER"  		property="publisher"/>
+		<result column="MEM_ID"  			property="memId"/>
+		<result column="HOPE_DATE"  		property="hopeDate"/>
+		<result column="STATUS"				property="status"/>
+		<result column="ROWNUM"				property="rowNum"/>
+		<result column="SEARCH_SUB" 		property="searchSub"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.book.vo.HopeBookVO" id="hopeBookUser">
+		<id column="HOPE_CODE"				property="hopeCode"/>
+		<result column="TITLE"  			property="title"/>
+		<result column="WRITER"  			property="writer"/>
+		<result column="PUBLISHER"  		property="publisher"/>
+		<result column="MEM_ID"  			property="memId"/>
+		<result column="HOPE_DATE"  		property="hopeDate"/>
+		<result column="STATUS"				property="status"/>
+		<result column="ROWNUM"				property="rowNum"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.book.vo.RecommendVO" id="recommend">
+		<id column="RCD_CODE"				property="rcdCode"/>
+		<result column="MEM_ID"  			property="memId"/>
+		<result column="BOOK_CODE"  		property="bookCOde"/>
+		<result column="RCD_STATUS"  		property="rcdStatus"/>
+		<result column="ROWNUM" 			property="rowNum"/>
+	</resultMap>
+	
+	
+	
+	<!-- 카테고리 조회 -->
+	<select id="selectBookCategory" resultMap="bookCate">
+	SELECT CATE_CODE
+		, CATE_NAME
+	FROM BOOK_CATEGORY
+	</select>
+	
+	<!-- 카테고리 등록 굳이 왜 ? -->
+	
+	<insert id="insertBookCategory">
+	INSERT INTO BOOK_CATEGORY(
+		CATE_CODE
+		, CATE_NAME
+	)VALUES(
+		#{cateCode}
+		,#{cateName}
+	)
+	</insert>
+	
+	<!-- 책 등록 -->
+	<insert id="insertBook">
+		INSERT INTO BOOK (
+			BOOK_CODE
+			, TITLE
+			, WRITER
+			, ISBN
+			, KEYWORD
+			, BK_CONTENT
+			, BK_PAGE
+			, BK_SIZE
+			, PUBLISHER
+			, BK_STOCK
+			, AREA
+			, BK_IMG
+			, PUB_DATE
+			, CATE_CODE
+		) VALUES (
+			#{bookCode}
+			, #{title}
+			, #{writer}
+			, #{isbn}
+			, #{keyword}
+			, #{bkContent}
+			, #{bkPage}
+			, #{bkSize}
+			, #{publisher}
+			, #{bkStock}
+			, #{area}
+			, #{bkImg}
+			, #{pubDate}
+			, #{cateCode}
+		)	
+	</insert>
+	
+	<!-- 표지 첨부 -->
+	<insert id="insertBookImg">
+		INSERT INTO BOOK_IMAGE (
+			BK_IMG_CODE
+			, BK_ORIGIN_NAME
+			, BK_AT_NAME
+			, BOOK_CODE
+		) VALUES (
+			 #{bkImgCode}
+			,#{bkOriginName}
+			,#{bkAtName}
+			,#{bookCode}
+		)		
+	</insert>
+	
+	<!-- 이미지 코드 숫자 -->
+	<select id="selectNextImgCode" resultType="int">
+		SELECT NVL(MAX(TO_NUMBER(BK_IMG_CODE)),0)+1
+		FROM BOOK_IMAGE
+	</select>
+	
+	<!-- 책 코드 -->
+	<select id="selectNextBookCode" resultType="String">
+		SELECT 'BOOK_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(BOOK_CODE, 6))), 0) + 1,3,'0')
+		FROM BOOK
+	</select> 
+	
+	<!-- 책 수정 -->
+   <update id="updateBook">
+      UPDATE BOOK
+      SET TITLE=#{title}
+         , WRITER=#{writer}
+         , KEYWORD=#{keyword}
+         , BK_CONTENT=#{bkContent}
+         , AREA=#{area}
+         , PUBLISHER=#{publisher}
+         , PUB_DATE=#{pubDate}
+         , BK_IMG=#{bkImg}
+         , BK_STOCK=#{bkStock}
+      WHERE BOOK_CODE = #{bookCode}
+   </update>
+   
+   <!-- 이미지 업데이트 -->
+   <update id="updateBkImg">
+      UPDATE BOOK_IMAGE
+      SET BK_ORIGIN_NAME=#{bkOriginName}
+         , BK_AT_NAME=#{bkAtName}
+      WHERE BOOK_CODE=#{bookCode}
+   </update>
+   
+   <!-- 수정 안 하면 원래 이미지 셀렉 -->
+   <select id="selectBkAtName" resultType="String">
+      SELECT BK_AT_NAME
+      FROM BOOK_IMAGE
+      WHERE BOOK_CODE=#{bookCode}
+   </select>
+   
+   <!-- 책 삭제 -->
+   <update id="deleteBook">
+      UPDATE BOOK
+      SET IS_DELETE = 'Y'
+      WHERE BOOK_CODE=#{bookCode}
+   </update>
+   
+   <!-- isDel조회 -->
+   <select id="selectIsDelete" resultType="String">
+   		SELECT IS_DELETE
+   		FROM BOOK
+   		WHERE BOOK_CODE=#{bookCode}
+   </select>
+   
+	<!-- 검색 조회 -->
+	<select id="selectSearchList" resultMap="book" >
+		SELECT B.BOOK_CODE
+			, TITLE
+			, WRITER
+			, ISBN
+			, KEYWORD
+			, BK_CONTENT
+			, AREA
+			, PUBLISHER
+			, PUB_DATE
+			, STATUS
+			, C.CATE_CODE
+			, CATE_NAME
+			, BK_IMG
+		FROM BOOK B, BOOK_CATEGORY C, BOOK_IMAGE I
+		WHERE (B.CATE_CODE = C.CATE_CODE
+		AND B.BOOK_CODE = I.BOOK_CODE)
+		AND IS_DELETE='N'
+		<choose>
+			<when test="searchSub != 'all'">
+				AND ${searchSub} LIKE '%'||#{searchTxt}||'%'
+			</when>
+			<when test="searchSub == 'all'">
+				AND (TITLE LIKE '%'||#{searchTxt}||'%'
+				OR WRITER LIKE '%'||#{searchTxt}||'%'
+				OR PUBLISHER LIKE '%'||#{searchTxt}||'%'
+				OR KEYWORD LIKE '%'||#{searchTxt}||'%')
+			</when>
+		</choose>
+        ORDER BY INPUT_DATE DESC
+	</select>
+
+	<!-- 전체 책 조회 -->
+	<select id="selectBookList" resultMap="book">
+		SELECT B.BOOK_CODE
+				, TITLE
+				, WRITER
+				, ISBN
+				, BK_CONTENT
+				, PUBLISHER
+				, AREA
+				, BK_IMG
+				, STATUS
+				, PUB_DATE
+				, KEYWORD
+				, C.CATE_CODE
+		FROM BOOK B, BOOK_CATEGORY C, BOOK_IMAGE I
+		WHERE B.CATE_CODE = C.CATE_CODE
+		AND B.BOOK_CODE = I.BOOK_CODE
+		AND IS_DELETE='N'
+		ORDER BY TITLE DESC
+	</select>
+	
+	<!-- 도서 상세 보기 -->
+	<select id="selectBookDetail" resultMap="book">
+		SELECT B.BOOK_CODE
+			, TITLE
+			, WRITER
+			, ISBN
+			, KEYWORD
+			, BK_CONTENT
+			, BK_PAGE
+			, BK_SIZE
+			, PUBLISHER
+			, TO_CHAR(INPUT_DATE, 'YYYY-MM-DD')			
+			, BK_STOCK
+			, AREA
+			, BK_IMG
+			, RCD_CNT
+			, STATUS
+			, PUB_DATE
+			, C.CATE_CODE
+			, CATE_NAME
+		FROM BOOK B, BOOK_CATEGORY C , BOOK_IMAGE I 
+		WHERE B.CATE_CODE = C.CATE_CODE
+		AND B.BOOK_CODE = I.BOOK_CODE
+		AND B.BOOK_CODE = #{bookCode}
+	</select>
+	
+	<!-- ////////////////// 책 추천 //////////////////////////////  -->
+	<!-- 책 추천수 업데이트 -->	
+	<update id="updateRcdCnt" >
+		UPDATE BOOK
+		SET RCD_CNT = RCD_CNT+1
+		WHERE BOOK_CODE = #{bookCode}
+	</update>
+	
+	<!-- 멤버별 추천 정보 입력 -->
+	<insert id="insertRcd">
+		INSERT INTO RECOMMEND (
+			RCD_CODE
+			, BOOK_CODE
+			, MEM_ID
+		)VALUES(
+			(SELECT 'RCD'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(RCD_CODE,4,3))),0)+1,3,'0') AS RCD_CODE FROM RECOMMEND)
+			, #{bookCode}	
+			, #{memId}	
+		)
+	</insert>
+	
+	<!-- 추천 기록 조회 -->
+	<select id="selectRcdInfo" resultMap="recommend">
+		SELECT RCD_STATUS
+		FROM RECOMMEND
+		WHERE BOOK_CODE=#{bookCode}
+		AND MEM_ID = #{memId}
+	</select>
+	
+	<!-- 추천도서 랭킹 -->
+	<select id="selectRcdBook" resultMap="book">
+		SELECT BOOK_CODE
+		    , TITLE
+			, WRITER
+			, ISBN
+			, BK_CONTENT
+			, PUBLISHER
+			, AREA
+			, BK_IMG
+			, STATUS
+			, PUB_DATE
+			, KEYWORD
+		    , RCD_CNT
+		    
+		FROM (
+		        SELECT BOOK_CODE
+		            , TITLE
+					, WRITER
+					, ISBN
+					, BK_CONTENT
+					, PUBLISHER
+					, AREA
+					, BK_IMG
+					, STATUS
+					, PUB_DATE
+					, KEYWORD
+		            , RCD_CNT
+		            , DENSE_RANK() OVER(ORDER BY RCD_CNT DESC) AS MRCD
+		        FROM BOOK
+		        WHERE IS_DELETE='N'
+		    )
+		WHERE MRCD &lt; 4
+	
+	</select>
+	
+	<!-- 신간도서 -->
+	<select id="selectNewBook" resultMap="book">
+	SELECT BOOK_CODE
+	    , TITLE
+		, WRITER
+		, ISBN
+		, BK_CONTENT
+		, PUBLISHER
+		, AREA
+		, BK_IMG
+		, STATUS
+		, PUB_DATE
+		, KEYWORD
+	FROM (
+	        SELECT BOOK_CODE
+	            , TITLE
+				, WRITER
+				, ISBN
+				, BK_CONTENT
+				, PUBLISHER
+				, AREA
+				, BK_IMG
+				, STATUS
+				, PUB_DATE
+				, KEYWORD
+	            , DENSE_RANK() OVER(ORDER BY INPUT_DATE DESC) AS RECENT
+	        FROM BOOK
+	        WHERE IS_DELETE='N'
+	    )
+	WHERE RECENT &lt; 7
+	</select>
+	
+	<!-- ///////////////////////////////// 도서 예약 ////////////////////////////////////// -->
+	<!-- 중복 예약 방지 -->
+	<select id="selectRsvCode" resultType="String">
+		SELECT RSV_CODE
+		FROM RESERVE
+		WHERE MEM_ID = #{memId }
+		AND ISBN = #{isbn }
+	</select>
+	
+	<select id="selectBrCode" resultType="String">
+		SELECT BR_CODE
+		FROM BORROW
+		WHERE MEM_ID = #{memId }
+		AND ISBN = #{isbn }
+		AND STATUS = 0
+	</select>
+	
+	<!-- insert 예약 정보 -->
+	<insert id="insertReserve">
+		INSERT INTO RESERVE(
+			RSV_CODE
+			, BOOK_CODE
+			, TITLE
+			, ISBN
+			, MEM_ID
+			
+		) VALUES (
+			(SELECT 'RSV'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(RSV_CODE,4,3))),0)+1,3,'0') AS RSV_CODE FROM RESERVE)
+			, #{bookCode }
+			, #{title }
+			, #{isbn }
+			, #{memId }
+		)
+	</insert>
+	
+	<!-- 책 재고 상태 status 변경  -->
+	<update id="updateStatus">
+		UPDATE BOOK
+		SET STATUS = STATUS+1
+		WHERE BOOK_CODE=#{bookCode}
+	</update>
+	
+	<!-- 마이페이지 예약도서 확인 -->
+	<select id="selectRsvUser" resultMap="reserve">
+		SELECT TITLE
+			, ISBN
+			, TO_CHAR(RSV_DATE, 'YYYY-MM-DD') AS RSV_DATE
+			, MEM_ID
+			, BOOK_CODE
+			, ROWNUM
+		FROM RESERVE
+		WHERE MEM_ID=#{memId }
+		ORDER BY ROWNUM
+	</select>
+	
+	<!-- 관리자 예약도서 확인 -->
+	<select id="selectRsvAdmin" resultMap="reserve">
+		SELECT TITLE
+			, ISBN
+			, TO_CHAR(RSV_DATE, 'YYYY-MM-DD ') AS RSV_DATE
+			, MEM_ID
+			, BOOK_CODE
+		FROM RESERVE
+	</select>
+	
+	<!-- 재대출 제한 확인 -->
+	<select id="selectRtDate" resultType="String">
+		SELECT TO_CHAR(RT_DATE, 'YYYY-MM-DD') AS RT_DATE
+		FROM BORROW
+		WHERE RT_DATE = (SELECT MAX(RT_DATE)
+						FROM BORROW
+						WHERE MEM_ID = #{memId}
+						AND ISBN = #{isbn})
+	</select>
+	
+	<!-- 강제 반납시키기,,, -->
+	
+	<!-- /////////////////////////////////도서 대여 ////////////////////////////////////// -->
+	<!-- 대여 정보 입력 -->
+	<insert id="insertBorrow">
+		INSERT INTO BORROW (
+			BR_CODE
+			, MEM_ID
+			, ISBN
+			, BOOK_CODE
+			, TITLE
+		) VALUES(
+			(SELECT 'BR'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(BR_CODE,3,3))),0)+1,3,'0') AS BR_CODE FROM BORROW )
+			, #{memId}
+			, #{isbn}
+			, (SELECT BOOK_CODE
+				FROM BOOK
+				WHERE #{isbn} = ISBN )
+			, (SELECT TITLE
+				FROM BOOK
+				WHERE #{isbn} = ISBN )
+		)
+	</insert>
+	
+	<!-- 예약 목록 삭제 -->
+	<delete id="deleteRsvList">
+		DELETE RESERVE 
+		WHERE #{memId} = MEM_ID 
+		AND #{isbn} = ISBN 
+	</delete>
+	
+	<!-- 해당 도서 brCnt 업뎃 -->
+	<update id="updateBrCnt">
+		UPDATE BOOK
+		SET BR_CNT = BR_CNT + 1
+		WHERE #{isbn} = ISBN
+	</update>
+	
+	<!-- 관리자 대여 목록 조회 -->
+	<select id="selectBrList" resultMap="borrow">
+		SELECT BR_CODE
+			, MEM_ID
+			, TITLE
+			, ISBN
+			, TO_CHAR(BR_DATE, 'YYYY-MM-DD ') AS BR_DATE
+			, TO_CHAR(RT_DATE, 'YYYY-MM-DD ') AS RT_DATE
+			, STATUS
+		FROM BORROW
+		ORDER BY STATUS
+	</select>
+	
+	<!-- 멤버별 대여목록 조회 -->
+	<select id="selectBrMember" resultMap="borrow">
+		SELECT BR_CODE
+			, MEM_ID
+			, TITLE
+			, ISBN
+			, BOOK_CODE
+			, TO_CHAR(BR_DATE, 'YYYY-MM-DD ') AS BR_DATE
+			, TO_CHAR(RT_DATE, 'YYYY-MM-DD ') AS RT_DATE
+			, STATUS
+		FROM BORROW
+		WHERE MEM_ID = #{memId}
+		ORDER BY STATUS
+	</select>
+	
+	<!-- 마이페이지 대여도서 확인 -->
+	<select id="selectBrUser" resultMap="borrow">
+		SELECT BR_CODE
+			, MEM_ID
+			, TITLE
+			, ISBN
+			, ROWNUM
+			, BOOK_CODE
+			, TO_CHAR(BR_DATE, 'YYYY-MM-DD ') AS BR_DATE
+			, TO_CHAR(RT_DATE, 'YYYY-MM-DD ') AS RT_DATE
+			, STATUS
+		FROM BORROW
+		WHERE MEM_ID=#{memId }
+		ORDER BY ROWNUM DESC
+	</select>
+	
+	<!-- 대여 상태별 조회 -->
+	<select id="selectBrStatus" resultMap="borrow">
+		SELECT BR_CODE
+			, MEM_ID
+			, TITLE
+			, ISBN
+			, TO_CHAR(BR_DATE, 'YYYY-MM-DD ') AS BR_DATE
+			, TO_CHAR(RT_DATE, 'YYYY-MM-DD ') AS RT_DATE
+			, STATUS
+		FROM BORROW
+		<choose>
+			<when test="searchSub != 'all'">
+				WHERE STATUS = #{searchSub}
+				ORDER BY RT_DATE DESC
+			</when>
+			<otherwise>
+				ORDER BY STATUS
+			</otherwise>
+		</choose>
+		
+	</select>
+	
+
+	
+	<!-- ///////////////////////////////// 도서 반납 ////////////////////////////////////// -->
+	<!-- BrCnt, book.status 업데이트 -->
+	<update id="updateBookInfo">
+		UPDATE BOOK
+		SET STATUS = STATUS -1
+		WHERE #{isbn} = ISBN
+	</update>
+	
+	<!-- 대여 상태 업데이트 -->
+	<update id="updateBrStatus">
+		UPDATE BORROW
+		SET STATUS = 2, RT_DATE = #{rtDate}
+		WHERE BR_CODE = #{brCode}
+	</update>
+	
+	<!-- 연체 상태 변경 -->
+	<update id="updateOverdue">
+		UPDATE BORROW
+		SET STATUS = 1
+		WHERE STATUS = 0
+		AND TO_CHAR(RT_DATE,'YYYY/MM/DD') &lt; TO_CHAR(SYSDATE, 'YYYY/MM/DD')
+	</update>
+	
+	<!--  -->
+	
+	<!-- 희망도서 신청 -->
+	<insert id="insertHopeBook">
+		INSERT INTO HOPE_BOOK(
+			HOPE_CODE
+			, TITLE
+			, WRITER
+			, PUBLISHER
+			, MEM_ID
+		) VALUES (
+			(SELECT 'HP_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(HOPE_CODE,4))),0)+1,3,0) AS NT_CODE FROM HOPE_BOOK)
+			, #{title}
+			, #{writer}
+			, #{publisher}
+			, #{memId}
+		)
+	</insert>
+	
+	<!-- 희망도서리스트 확인 ADMIN용 -->
+	<select id="selectHopeBook" resultMap="hopeBook">
+		SELECT HOPE_CODE
+			, TITLE
+			, WRITER
+			, PUBLISHER
+			, MEM_ID
+			, STATUS
+			, TO_CHAR(HOPE_DATE,'YYYY/MM/DD') AS HOPE_DATE
+			, ROWNUM
+		FROM HOPE_BOOK
+		ORDER BY ROWNUM DESC
+	</select>
+	
+	<!-- 희망도서리스트 STATUS별 조회  -->
+	<select id="selectHopeBookStatus" resultMap="hopeBook">
+		SELECT HOPE_CODE
+			, TITLE
+			, WRITER
+			, PUBLISHER
+			, MEM_ID
+			, STATUS
+			, TO_CHAR(HOPE_DATE,'YYYY/MM/DD') AS HOPE_DATE
+			, ROWNUM
+		FROM HOPE_BOOK
+		<choose>
+			<when test="searchSub != 'all'">
+				WHERE STATUS = #{searchSub}
+				ORDER BY ROWNUM DESC
+			</when>
+			<otherwise>
+				ORDER BY ROWNUM DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 희망도서리스트 확인 user용 -->
+	<select id="selectHpUser" resultMap="hopeBookUser">
+		SELECT HOPE_CODE
+			, TITLE
+			, WRITER
+			, PUBLISHER
+			, MEM_ID
+			, STATUS
+			, TO_CHAR(HOPE_DATE,'YYYY/MM/DD') AS HOPE_DATE
+			, ROWNUM
+		FROM HOPE_BOOK
+		WHERE #{memId} = MEM_ID
+		ORDER BY ROWNUM DESC
+	</select>
+	
+	<!-- 희망도서리스트 STATUS별 조회 USER용 -->
+	<select id="selectHpStatusUser" resultMap="hopeBook">
+		SELECT HOPE_CODE
+			, TITLE
+			, WRITER
+			, PUBLISHER
+			, MEM_ID
+			, STATUS
+			, TO_CHAR(HOPE_DATE,'YYYY/MM/DD') AS HOPE_DATE
+			, ROWNUM
+		FROM HOPE_BOOK
+		WHERE MEM_ID=#{memId}
+		<choose>
+			<when test="searchSub != 'all'">
+				AND STATUS = #{searchSub}
+				ORDER BY ROWNUM DESC
+			</when>
+			<otherwise>
+				ORDER BY ROWNUM DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+
+	
+	<!-- 희망도서 상태변경 -->
+	<update id="updateHpBook" parameterType="java.util.HashMap">
+		<foreach collection="hopeBookList" item="hbInfo" separator=";" open="DECLARE BEGIN" close="; END;">
+		UPDATE HOPE_BOOK
+		SET STATUS = #{hbInfo.status}
+		WHERE #{hbInfo.hopeCode}=HOPE_CODE
+		</foreach>
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+

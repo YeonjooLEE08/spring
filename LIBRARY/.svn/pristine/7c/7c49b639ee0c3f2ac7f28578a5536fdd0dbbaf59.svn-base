@@ -1,0 +1,63 @@
+@charset "UTF-8";
+
+#myChart{
+	width: 500px;
+	height: 186px;
+}
+
+.complitBookList{
+	margin: 6rem auto 0rem;
+	width: 30rem;
+	}
+.complitBookList > div{
+	display: flex;
+	text-align: center;
+	font-size: 1.2rem;
+	align-items: center;
+	justify-content: space-around;
+}
+.complitBookList > div:nth-child(1n){
+	background-color: #FFE3E3; /* 붉은색 */
+	border-radius: 5px;
+	
+}
+.complitBookList > div:nth-child(2n){
+	background-color: #C9CCD5; /* 노란색 */
+	border-radius: 2px;
+	position: relative;
+	left: -50px;
+}
+.complitBookList > div:nth-child(3n){
+	background-color: #E4D8DC; /* 연두색 */
+	border-radius: 10px;
+	position: relative;
+	left: 30px;
+}
+.complitBookList > div:nth-child(4n){
+	background-color: #93B5C6; /* 연두색 */
+	border-radius: 10px;
+	position: relative;
+	left: -30px;
+	color: #fff;
+}
+.pageName div {
+	display: inline-block;
+	margin-top: 1rem;
+	padding: 2px 7px;
+	background-color: #FDFAF6;
+	color: #02475E;
+	text-align: center;
+	width: 8rem;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 1rem;
+}
+.bookPlaner-empty{
+	width: 20rem;
+	height: 5rem;
+	background-color: #eeeeee;
+}
+.bookPlaner-top{
+	display: flex;
+	justify-content: space-around;
+}
