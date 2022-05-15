@@ -1,12 +1,18 @@
 package com.kh.library.board.controller;
 
+import java.io.File;
+import java.util.UUID;
+
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.library.board.service.BoardService;
 import com.kh.library.board.vo.NtBoardVO;
@@ -26,8 +32,21 @@ public class BoardController {
 	}
 	
 	//공지사항 글 등록
-	@PostMapping("/regNtBoard")
-	public String insertNtBoard(Model model, NtBoardVO ntBoardVO) {
+	@RequestMapping("/regNtBoard")
+	public String insertNtBoard(Model model, NtBoardVO ntBoardVO, RedirectAttributes rttr) throws Exception {
+		//파일 업로드
+		String fileName=null;
+		MultipartFile uploadFile = ntBoardVO.getUploadFile();
+		
+		if(!uploadFile.isEmpty()){
+			String originalFileName = uploadFile.getOriginalFilename();
+			String ext = FilenameUtils.getExtension(originalFileName);
+			UUID uuid = UUID.randomUUID();
+			fileName = uuid+"."+ext;
+			uploadFile.transferTo(new File("D:\\dev\\"+fileName));
+		}
+		ntBoardVO.setFileName(fileName);
+		
 		String nextNtCode = boardService.selectNextNtCode();
 		ntBoardVO.setNtCode(nextNtCode);
 		boardService.insertNtBoard(ntBoardVO);

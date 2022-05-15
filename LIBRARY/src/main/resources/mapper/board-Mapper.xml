@@ -13,6 +13,7 @@
 		<result column="SEARCH_SUB" 				property="searchSub"/>
 		<result column="SEARCH_TXT" 				property="searchTxt"/>
 		<result column="ROWNUM" 					property="rowNum"/>
+		<result column="FILE_NAME" 					property="fileName"/>
 		
 	</resultMap>
 	
@@ -24,12 +25,14 @@
 			, NT_CONTENT
 			, MEM_ID
 			, MEM_NAME
+			, FILE_NAME
 		) VALUES (
 			#{ntCode}
 			, #{ntTitle}
 			, #{ntContent}
 			, #{memId}
 			, #{memName}
+			, #{fileName}
 		)
 	</insert>
 	
@@ -48,6 +51,7 @@
 			, TO_CHAR(NT_CREATE_DATE,'YYYY-MM-DD') AS NT_CREATE_DATE 
 			, ROWNUM
 			, NT_RD_CNT
+			, FILE_NAME
 		FROM NT_BOARD
 		ORDER BY ROWNUM DESC
 	</select>
@@ -61,6 +65,7 @@
 			, MEM_ID
 			, MEM_NAME
 			, NT_RD_CNT
+			, FILE_NAME
 		FROM NT_BOARD
 		WHERE NT_CODE=#{ntCode}
 	</select>

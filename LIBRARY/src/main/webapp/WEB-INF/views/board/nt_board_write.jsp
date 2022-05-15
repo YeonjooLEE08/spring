@@ -10,7 +10,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-12">
-			<form action="/board/regNtBoard" method="post" id="ntBoardWrite" class="needs-validation">
+			<form action="/board/regNtBoard" method="post" id="ntBoardWrite" class="needs-validation" enctype="multipart/form-data">
 				<div class="row">
 					<input type="hidden" name="ntCode" value="${ntCode }">
 					<input type="hidden" name="memId" value="${sessionScope.loginInfo.memId }">
@@ -24,6 +24,12 @@
 						내용 <textarea rows="5" cols="50" name="ntContent"></textarea>
 					</div>
 				</div>
+				<div class="row">
+					<div class="col">
+						파일 <input type="file" name="uploadFile">
+					</div>
+				</div>
+				
 				<div class="row">
 					<div class="col">
 					<input type="submit" value="전송">
