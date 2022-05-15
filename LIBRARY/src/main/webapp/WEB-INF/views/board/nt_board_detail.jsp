@@ -79,6 +79,11 @@
 				<tr>
 					<td class="content" colspan="2">${ntBoard.ntContent}</td>
 				</tr>
+				<c:if test="${ntBoard.fileName ne null }">
+				<tr>
+					<td>첨부파일 <a href="/board/fileDownload?fileName=${ntBoard.fileName}">${ntBoard.fileName}</a></td>
+				</tr>
+				</c:if>
 			</tbody>
 		</table>	
 		<div class="ntBtn">
