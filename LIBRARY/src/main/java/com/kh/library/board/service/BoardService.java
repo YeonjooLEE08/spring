@@ -30,4 +30,7 @@ public interface BoardService {
 	
 	//공지사항 삭제
 	void deleteNtBoardDetail(String ntCode);
+
+	//공지사항 페이징 
+	int selectBoardCnt(NtBoardVO ntBoardVO);
 }

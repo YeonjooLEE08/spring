@@ -33,6 +33,11 @@ public class BoardServiceImpl implements BoardService {
 		return sqlSession.selectList("boardMapper.selectNtBoard");
 	}
 	
+	//페이징처리 위한
+	@Override
+	public int selectBoardCnt(NtBoardVO ntBoardVO) {
+		return sqlSession.selectOne("boardMapper.selectBoardCnt", ntBoardVO);
+	}
 	@Override
 	public NtBoardVO selectNtBoardDetail(NtBoardVO ntBoardVO){
 		return sqlSession.selectOne("boardMapper.selectNtBoardDetail",ntBoardVO);

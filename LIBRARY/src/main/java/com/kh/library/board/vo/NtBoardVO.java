@@ -2,7 +2,9 @@ package com.kh.library.board.vo;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class NtBoardVO {
+import com.kh.library.util.vo.PageVO;
+
+public class NtBoardVO  extends PageVO{
 	private String ntCode;
 	private String ntTitle;
 	private String ntContent;
@@ -14,12 +16,27 @@ public class NtBoardVO {
 	private int rowNum;
 	private String fileName;
 	private String fileExt;
+	private String sort;
 	private MultipartFile uploadFile;
 	
+	private int boardCount;
 	
 	
 	
 	
+	
+	public int getBoardCount() {
+		return boardCount;
+	}
+	public void setBoardCount(int boardCount) {
+		this.boardCount = boardCount;
+	}
+	public String getSort() {
+		return sort;
+	}
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
 	public String getFileExt() {
 		return fileExt;
 	}

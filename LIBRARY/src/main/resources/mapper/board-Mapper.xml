@@ -15,6 +15,7 @@
 		<result column="ROWNUM" 					property="rowNum"/>
 		<result column="FILE_NAME" 					property="fileName"/>
 		<result column="FILE_EXT" 					property="fileExt"/>
+		<result column="sort" 						property="sort"/>
 		
 	</resultMap>
 	
@@ -50,6 +51,15 @@
 		WHERE FILE_NAME = '%jpg'
 	</update>
 	
+	<!-- 공지사항 글 갯수 조회 -->
+	<select id="selectBoardCnt" resultType="int">
+		SELECT COUNT(NT_CODE)
+		FROM NT_BOARD
+		<if test="searchTxt!=null and !searchTxt.equals('')">
+			WHERE ${sort} LIKE '%'||#{searchTxt}||'%'
+		</if>
+	</select>
+		
 	<!-- 공지사항 조회 -->
 	<select id="selectNtBoard" resultMap="ntBoardInfo">
 		SELECT NT_CODE
@@ -61,8 +71,33 @@
 			, NT_RD_CNT
 			, FILE_EXT
 			, FILE_NAME
-		FROM NT_BOARD
-		ORDER BY ROWNUM DESC
+		FROM 
+		(
+			SELECT NT_CODE
+				, NT_TITLE
+				, NT_CONTENT
+				, MEM_NAME
+				, TO_CHAR(NT_CREATE_DATE,'YYYY-MM-DD') AS NT_CREATE_DATE 
+				, ROWNUM
+				, NT_RD_CNT
+				, FILE_EXT
+				, FILE_NAME
+			FROM
+			(
+				SELECT NT_CODE
+					, NT_TITLE
+					, NT_CONTENT
+					, MEM_NAME
+					, TO_CHAR(NT_CREATE_DATE,'YYYY-MM-DD') AS NT_CREATE_DATE 
+					, ROWNUM
+					, NT_RD_CNT
+					, FILE_EXT
+					, FILE_NAME	
+				FROM NT_BOARD
+				ORDER BY NT_CREATE_DATE DESC
+			)
+		)
+		WHERE ROW_NUM &gt;=#{startNum} AND ROW_NUM &lt; = #{endNum}
 	</select>
 	
 	<!-- 공지사항 상세보기 -->
