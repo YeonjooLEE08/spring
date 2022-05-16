@@ -1,11 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.util.*"%>
+<%@ page import="java.io.*"%>
+<%@ page import="java.net.*"%>
+<%
+	//파일 기본경로
+	String defaultPath = request.getSession().getServletContext().getRealPath("/");
+	//파일 기본경로, 상세경로
+	String filePath = defaultPath + "ckEimg" + File.separator;
+%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+	<meta name="viewport" content="width=80%,  initial-scale=1">
+	<script src="/resources/ckeditor/ckeditor.js"></script>
+	<script>
+		window.onload = function(){
+			ck = CKEDITOR.replace("bkContent");
+		};
+	</script>
 <link href="/resources/css/common/infoBar.css" rel="stylesheet">
 <style type="text/css">
 .btnDiv button{
@@ -82,7 +98,7 @@
 				</div>
 				<div class="col-12">
 					<label for="bkContent" class="form-label">글내용</label>
-					<textarea class=form-control id="bkContent" name="bkContent"></textarea>
+					<textarea class="form-control" name="bkContent" id = "bkContent"></textarea>
 				</div>
 				<div>
 					<label for="file" class="form-label">표지</label>

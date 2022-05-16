@@ -1,9 +1,14 @@
+<%@page import="java.text.SimpleDateFormat"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" 
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.io.*"%>
 <%@ page import="java.net.*"%>
+<%
+	Date nowTime = new Date();
+	SimpleDateFormat sf = new SimpleDateFormat("yyyy년 MM월 dd일");
+%>
 <%
 	//파일 기본경로
 	String defaultPath = request.getSession().getServletContext().getRealPath("/");
@@ -28,25 +33,20 @@
 	padding-left: 10px;
 	padding-right: 10px;
 }
-.title{
-	margin-bottom: 10px;
-	font-size: 20px; 
+.writeForm table{
+	width:100%;
+}	
+
+.writeForm td{
+	padding: 10px;
+	border-bottom: 1px solid #dddddd;
+	border-top: 1px solid #dddddd;
+}
+.writeForm td:first-child{
+	background-color: #F0F0F0;
+	text-align: center;
 	font-weight: 600;
 }
-.title input{
-	margin-top:5px;
-}
-
-.file{
-	margin-top:10px;
-	margin-bottom: 10px;
-	font-weight: 600;
-}
-
-.file input{
-	margin-left:10px;
-}
-
 .btnDiv{
 	padding-top:10px;
 	padding-left:25px;
@@ -75,10 +75,29 @@
 	<input type="hidden" name="memId" value="${sessionScope.loginInfo.memId }">
 	<input type="hidden" name="memName" value="${sessionScope.loginInfo.memName }">
 	<div class="writeForm">
-		<div class="title">제목 <input type ="text" name="ntTitle" id="ntTitle" class="form-control"></div>
-		<textarea name="ntContent" id = "editor"></textarea>
-		<div class="file">파일 <input type="file" name="uploadFile"></div>
-	</div>
+		<table>
+			<tr>
+				<td class="title">제목</td>
+				<td><input type ="text" name="ntTitle" id="ntTitle" class="form-control"></td>
+			</tr>
+			<tr>
+				<td>작성자</td>
+				<td>${sessionScope.loginInfo.memName }</td>
+			</tr>
+			<tr>
+				<td>등록일</td>
+				<td><%= sf.format(nowTime) %></td>
+			</tr>
+			<tr>
+				<td>내용</td>
+				<td><textarea name="ntContent" id = "editor"></textarea></td>
+			</tr>
+			<tr>
+				<td>첨부파일</td>
+				<td><input type="file" name="uploadFile" class="form-control"></td>
+			</tr>
+		</table>
+		</div>
 	<div class="btnDiv">
 		<button type="submit" class="btn btn-success">글쓰기</button>
 	</div>
