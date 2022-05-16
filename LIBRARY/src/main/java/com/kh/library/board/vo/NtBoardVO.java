@@ -13,10 +13,19 @@ public class NtBoardVO {
 	private String searchSub;
 	private int rowNum;
 	private String fileName;
+	private String fileExt;
 	private MultipartFile uploadFile;
 	
 	
 	
+	
+	
+	public String getFileExt() {
+		return fileExt;
+	}
+	public void setFileExt(String fileExt) {
+		this.fileExt = fileExt;
+	}
 	public String getFileName() {
 		return fileName;
 	}

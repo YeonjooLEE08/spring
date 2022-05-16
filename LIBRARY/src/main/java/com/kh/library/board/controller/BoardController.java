@@ -115,7 +115,7 @@ public class BoardController {
 			String browser = request.getHeader("User-Agent");
 			
 			if(browser.contains("MSIE")|| browser.contains("Trident")|| browser.contains("Chrome")) {
-				filename = URLEncoder.encode(filename,"UTR-8").replaceAll("\\+", "%20");
+				filename = URLEncoder.encode(filename,"UTF-8").replaceAll("\\+", "%20");
 			}
 			else {
 				filename = new String(filename.getBytes("UTF-8"), "ISO-8859-1");

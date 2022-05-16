@@ -84,6 +84,7 @@ select{
                <col width="15%">
                <col width="13%">
                <col width="11%">
+               <col width="7%">
                <thead>
                <tr>
                   <th scope="col">No</th>
@@ -91,6 +92,7 @@ select{
                   <th scope="col">작성자</th>
                   <th scope="col">작성일</th>
                   <th scope="col">조회수</th>
+                  <th scope="col">첨부</th>
                   
                </tr>
                </thead>
@@ -104,6 +106,7 @@ select{
                            <td>${ntBoardInfo.memName }</td>
                            <td>${ntBoardInfo.ntCreateDate}</td>
                            <td>${ntBoardInfo.ntRdCnt}</td>
+                           <td><a href="/board/fileDownload?fileName=${ntBoard.fileName}">${ntBoardInfo.fileExt}</a></td>
                         </tr>
                      </c:forEach>
                   </c:when>

@@ -14,6 +14,7 @@
 		<result column="SEARCH_TXT" 				property="searchTxt"/>
 		<result column="ROWNUM" 					property="rowNum"/>
 		<result column="FILE_NAME" 					property="fileName"/>
+		<result column="FILE_EXT" 					property="fileExt"/>
 		
 	</resultMap>
 	
@@ -42,6 +43,13 @@
 		FROM NT_BOARD
 	</select>
 	
+	<!-- 첨부파일 확장자 조회 -->
+	<update id="updateFileExt">
+		UPDATE NT_BOARD
+		SET FILE_EXT = 'jpg'
+		WHERE FILE_NAME = '%jpg'
+	</update>
+	
 	<!-- 공지사항 조회 -->
 	<select id="selectNtBoard" resultMap="ntBoardInfo">
 		SELECT NT_CODE
@@ -51,6 +59,7 @@
 			, TO_CHAR(NT_CREATE_DATE,'YYYY-MM-DD') AS NT_CREATE_DATE 
 			, ROWNUM
 			, NT_RD_CNT
+			, FILE_EXT
 			, FILE_NAME
 		FROM NT_BOARD
 		ORDER BY ROWNUM DESC
