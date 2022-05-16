@@ -49,7 +49,7 @@ public class BoardController {
 			String ext = FilenameUtils.getExtension(originalFileName);
 			UUID uuid = UUID.randomUUID();
 			fileName = uuid+"."+ext;
-			uploadFile.transferTo(new File("D:\\dev\\"+fileName));
+			uploadFile.transferTo(new File("D:\\git\\spring\\LIBRARY\\src\\main\\webapp\\resources\\upload\\"+fileName));
 		}
 		ntBoardVO.setFileName(fileName);
 		
@@ -124,7 +124,7 @@ public class BoardController {
 			System.out.println("UnsupportedEncodingException");
 		}
 		
-		realFilename = "D:\\dev\\"+filename;
+		realFilename = "D:\\git\\spring\\LIBRARY\\src\\main\\webapp\\resources\\upload\\"+filename;
 		System.out.println(realFilename);
 		
 		File file1 = new File(realFilename);

@@ -62,7 +62,7 @@
 			, FILE_EXT
 			, FILE_NAME
 		FROM NT_BOARD
-		ORDER BY ROWNUM DESC
+		ORDER BY NT_CREATE_DATE DESC
 	</select>
 	
 	<!-- 공지사항 상세보기 -->
@@ -105,7 +105,7 @@
 			</when>
 		</choose>
 		
-		ORDER BY ROWNUM DESC
+		ORDER BY NT_CREATE_DATE DESC
 	</select>
 	
 	<!-- 공지사항 글 수정 -->
