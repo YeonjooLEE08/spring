@@ -1,0 +1,33 @@
+spring-security
+- 접근 주체(Principal) : 특정한 페이지에 접근하려는 대상
+- 권한: 특정한 페이지에 접근하기 위해 필요한 요소
+- 인증(Authorise):  특정 페이지에 접근하려는 대상을 판별
+- 인가(Authentication): 인증 받은 대상에게 권한이 있는지 판별 
+
+
+1. pom.xml에 jar 스프링 시큐리티 파일 추가
+2. 시큐리티 설정과 관련된 객체 생성
+ - 암호화(security-context), 스프링 설정 객체
+3. 시큐리티 설정 (SecurityConfig.java)
+ - WebSecurityConfigurerAdapter 클래스를 상속 받아야지만 시큐리티 설정 가능
+ - config() 메소드 3개를 오버라이딩 
+ - @Configuration , @EnableWebSecurity 어노테이션 추가
+ - http에 주로 작업함 ( 페이지 이동 시 인증 권한 ) 
+
+
+(스프링이) 객체를 만들어주는 어노테이션
+@Component
+
+@Controller
+@Service
+@Configuration
+@Repository
+
+
+만들어진 객체를 의존성 주입하는 어노테이션
+@Autowired - 자료형으로 판별 
+@Resource - (autowired가 자료형이 여러개일 때 이름 줘서 판별 )
+
+
+개발자가 직접 객체 생성하는 것을 지양 
+( MemberVO mem = new Member();

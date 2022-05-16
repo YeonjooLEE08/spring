@@ -1,0 +1,189 @@
+.clubInfo{
+	text-align: left;
+	margin-bottom: 20px;
+}
+img{
+	width: 40px;
+	height : 40px;
+	border-radius: 70%;
+	overflow : hidden;
+}
+.page-item.active .page-link {
+	background-color: #72a37c;
+	border-color: #72a37c;
+}
+.page-link {
+	color: #72a37c;
+}
+.page-link:hover{
+	color: #72a37c; 
+}
+.table{
+/*  --bs-table-striped-bg: #c7e2d1;  */
+	 --bs-table-hover-bg:#ecf7f1; 
+	 margin-bottom: 0;
+ 
+}
+
+button.img-button{
+	border: none;
+	background: transparent;
+	font-size: 1.125rem;
+}
+.fas{
+	color: black;
+}
+.keyword{
+	border: none;
+	border-bottom: 1px solid black;
+	outline: none;
+	background: transparent;
+	width: 300px;
+	color: black;
+	font-size: 1.063rem;
+	font-style: "Malgun Gothic";
+}
+select{
+	border: none;
+	outline: none;
+	width: 80px;
+	font-size: 1.125rem;
+	font-weight: 200;
+	background: transparent;
+	color: black;
+}
+.memListT {
+	border-spacing: 0 15px;
+	border-collapse: separate;
+	text-align: left;
+}
+.memListT thead tr th,
+.memListT thead tr td,
+.memListT tbody tr th,
+.memListT tbody tr td {
+	vertical-align: middle;
+	border: none;
+}
+.memListT tbody tr {
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	border-radius: 5px;
+}
+.memListT tbody tr td {
+	background: #fff;
+}
+.memListT tbody tr td:nth-child(1) {
+	border-radius: 5px 0 0 5px;
+}
+.memListT tbody tr td:nth-last-child(1) {
+	border-radius: 0 5px 5px 0;
+}
+
+.user-info {
+	display: flex;
+	align-items: center;
+}
+.user-info__img img {
+	margin-right: 15px;
+	height: 45px;
+	width: 45px;
+	border-radius: 45px;
+	border: 3px solid #fff;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.active-circle {
+	height: 10px;
+	width: 10px;
+	border-radius: 10px;
+	margin-right: 5px;
+}
+.mem-name{
+	margin-right: 15px;
+	font-size: 14px;	
+}
+.dropdown-menu{
+	position: absolute; 
+	transform: translate3d(38px, 21px, 0px); 
+	top: 0px; 
+	left: 0px;
+	will-change: transform;
+}
+.board-btn{
+	margin-top: 10px;
+}
+.club-name{
+	font-weight: bold;
+	font-size: 20px;
+	margin-bottom: 15px;
+	margin-right: 30px;
+}
+.member-count{
+	font-size: 15px;
+	font-weight: normal;
+}
+.club-intro{
+	margin-bottom: 20px;
+}
+.club-name, .club-1{
+	display: inline-block;
+}
+.dropdown{
+	margin-top: 20px;
+	display: inline-block;
+	text-align: right;
+}
+.club-img img{
+	width: 366px;
+	height: 205.875px;
+	border-radius: 0;
+	margin-bottom: 15px;
+	image-rendering: -webkit-optimize-contrast;
+}
+.club-info{
+	white-space:pre-line;
+	line-height: 30px;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	font-size: 1rem;
+}
+.club-intro{
+	margin-top: 0px;
+	font-size: 15px;
+}
+.px-2{
+	color: #ffa900;
+}
+.month-book{
+	text-align: center;
+	font-weight: bold;
+	font-size: 20px;
+}
+details{
+	font-size: 17px;
+	margin-bottom: 30px;
+}
+.join-btn{
+	background-color: #ffa900;
+	color: white;
+	margin-bottom: 10px;
+}
+.write-btn {
+	background-color: #ffa900;
+	color: white;
+}
+.book-btn{
+	border-color: #ffa900;
+	color: #ffa900;
+	background-color: white;
+}
+.book-btn:hover{
+	color: white;
+	background-color: #ffa900;
+	border-color: #ffa900;
+}
+.club-1{
+	font-size: 15px;
+}
+summary{
+	font-weight: bold;
+}

@@ -1,0 +1,10 @@
+@charset "UTF-8";
+input{
+	border: 1px solid #d4d4d4;
+	border-radius: 3px;
+	padding: 3.5px;
+}
+input:focus {
+	border-color: #c7e2d1;
+	box-shadow: 0 0 8px #c7e2d1;
+}
