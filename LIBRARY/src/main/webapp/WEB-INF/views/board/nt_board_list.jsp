@@ -56,6 +56,8 @@ select{
 	text-align:right;
 }
 </style>
+   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="container">
@@ -125,7 +127,27 @@ select{
 	            <button type="button" class="btn btn-success btn-sm" onclick="location.href='/board/ntBoardWrite';">글쓰기</button>
 	         </c:if>
    		</div>
+
+	<div class="pageDiv">
+		<nav aria-label="Page navigation example">
+			<ul class="pagination pagination-sm justify-content-center">
+				<li class="page-item <c:if test="${!ntBoardVO.prev }">disabled</c:if>">
+				<a class="page-link" href="/board/ntBoardList?nowPage=${ntBoardVO.beginPage - 1 }"
+					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+				</a></li>
+				<c:forEach begin="${ntBoardVO.beginPage }" end="${ntBoardVO.endPage }" var="pageIndex">
+						<li class="page-item <c:if test="${ntBoardVO.nowPage eq pageIndex }">active</c:if>"><a class="page-link" 
+						href="/board/ntBoardList?nowPage=${pageIndex }">${pageIndex }</a></li>
+					</c:forEach>
+				<li class="page-item <c:if test="${!ntBoardVO.next }">disabled</c:if>">
+				      <a class="page-link" href="/board/ntBoardList?nowPage=${ntBoardVO.endPage + 1 }" aria-label="Next">
+				        <span aria-hidden="true">&raquo;</span>
+				      </a>
+				</li>
+			</ul>
+		</nav>
 	</div>
+</div>	
 <script type="text/javascript" src="/resources/js/board/search_nt_board.js"></script>
 </body>
 </html>

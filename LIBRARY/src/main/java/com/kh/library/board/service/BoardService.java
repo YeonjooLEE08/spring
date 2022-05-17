@@ -14,7 +14,7 @@ public interface BoardService {
 	void insertNtBoard(NtBoardVO ntBoardVO);
 	
 	//공지사항 조회
-	List<NtBoardVO> selectNtBoardList();
+	List<NtBoardVO> selectNtBoardList(NtBoardVO ntBoardVO);
 	
 	//공지사항 상세조회
 	NtBoardVO selectNtBoardDetail(NtBoardVO ntBoardVO);

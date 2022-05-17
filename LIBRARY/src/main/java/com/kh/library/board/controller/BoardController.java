@@ -70,7 +70,7 @@ public class BoardController {
 		//2.페이징 처리를 위한 세팅 메소드 호출
 		ntBoardVO.setPageInfo();
 		
-		model.addAttribute("ntBoardList", boardService.selectNtBoardList());
+		model.addAttribute("ntBoardList", boardService.selectNtBoardList(ntBoardVO));
 		return "board/nt_board_list";
 	}
 	

@@ -78,10 +78,10 @@
 				, NT_CONTENT
 				, MEM_NAME
 				, TO_CHAR(NT_CREATE_DATE,'YYYY-MM-DD') AS NT_CREATE_DATE 
-				, ROWNUM
 				, NT_RD_CNT
 				, FILE_EXT
 				, FILE_NAME
+				, ROWNUM AS ROW_NUM
 			FROM
 			(
 				SELECT NT_CODE
@@ -97,7 +97,7 @@
 				ORDER BY NT_CREATE_DATE DESC
 			)
 		)
-		WHERE ROW_NUM &gt;=#{startNum} AND ROW_NUM &lt; = #{endNum}
+		WHERE ROW_NUM &gt; =#{startNum} AND ROW_NUM &lt; = #{endNum}
 	</select>
 	
 	<!-- 공지사항 상세보기 -->

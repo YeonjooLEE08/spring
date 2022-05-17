@@ -30,7 +30,7 @@
 				<td><a href="/book/selectRcdBook1">추천도서 더보기</a></td>
 			</tr>
 			<tr>
-				<td><a href="#">메뉴</a></td>
+				<td><a href="/book/selectNewBook">신간도서 슬라이드 테스트</a></td>
 			</tr>
 			<tr>
 				<td><a href="#">메뉴</a></td>

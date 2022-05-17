@@ -27,7 +27,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
-	public List<NtBoardVO> selectNtBoardList(){
+	public List<NtBoardVO> selectNtBoardList(NtBoardVO ntBoardVO){
 		//파일 확장자명 설정
 		sqlSession.update("boardMapper.updateFileExt");
 		return sqlSession.selectList("boardMapper.selectNtBoard");
