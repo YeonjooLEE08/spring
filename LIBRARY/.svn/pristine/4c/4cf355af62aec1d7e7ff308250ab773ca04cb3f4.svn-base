@@ -1,0 +1,174 @@
+@charset "UTF-8";
+
+#myChart{
+	width: 500px;
+	height: 186px;
+}
+
+
+
+/* 취향 분석 */
+.bookPlaner-top-left {width: 50%;}
+.bookPlaner-top-right {width: 50%; margin-left: 3rem;}
+/* OO님의 취향 분석! */
+.bookPlaner-top-left > div:first-child{
+	font-size: 1.5rem;
+    font-weight: bold;
+    color: #427a4e
+}
+/*태그 나오는 부분*/
+.bookPlaner-top-left > div:nth-child(2){
+	margin: 1rem auto;
+	height: 10rem;
+	border: 1px solid #ddd;
+	border-radius: 7px;
+	padding: 1.7rem;
+	font-size: 1.4rem;
+	font-weight: bold;
+}
+/*나의 완독 도서 카테고리 TOP*/
+.bookPlaner-top-left > div:nth-child(3){
+	padding: 0.5rem;
+	font-weight: bold;
+	font-size: 1.2rem;
+	background-color: #E7EDE4;
+	text-align: center;
+}
+.myTopThree-div{
+	display: flex;
+	flex-direction: column;
+	color: #427a4e;
+	font-size: 1.1rem;
+	margin-bottom: 1rem;
+}
+.myTopThree-div > div{
+	display: flex;
+	text-align: center;
+	padding: 0.5rem;
+	border-bottom: 1px solid #E7EDE4;
+}
+
+.myTopThree-div span:first-child{width: 50%;}
+.myTopThree-div span:last-child{width: 50%;}
+
+
+/* 랜덤추천 div */
+/* 읽을 만한 책 랜덤 추천 */
+.bookPlaner-top-left > div:nth-child(5) > div:first-child{
+	color: #427a4e;
+	font-size: 1.5rem;
+	font-weight: bold;
+	margin-top: 3rem;
+}
+/* 추천 도서 나오는 곳 */
+.bookPlaner-top-left > div:nth-child(5) > div:last-child{
+	font-size: 1.1rem;
+	border: 1px solid #ddd;
+	border-radius: 7px;
+	padding: 1rem;
+	padding-right: 1.1rem;
+	font-size: 1.1rem;
+	margin: 1rem auto;
+}
+.bookPlaner-top-left > div:nth-child(5) > div:last-child > div{
+	margin: 5px 0;
+}
+.bookPlaner-top-left > div:nth-child(5) > div:last-child > div:hover{
+	font-weight: bold;
+}
+/*독서 기록 리스트*/
+.bookJ{
+	display: flex;
+	justify-content: space-around;
+	margin-top: 3rem;
+	height: 170px;
+}
+.bookJ > div:first-child{
+	width: 20%; 
+	display: flex; 
+	align-items: center;
+    flex-direction: column;
+    justify-content: center;
+	background-color: #427a4e;
+	border-radius: 0 0 0 3rem;
+	}
+.bookJ > div:first-child > span{
+	font-size: 1.4rem;
+	font-weight: bold;
+	margin-bottom: 1rem;
+	color: #eee;
+}
+
+.bookJ > div:first-child > div{
+	display: flex;
+}
+.bookJ > div:last-child{width: 80%;}
+
+.complitBookList-table table{
+	border-top: 2px solid;
+    border-right: 1px solid #eee;
+    margin-bottom: 0;
+}
+.complitBookList-table table > tbody td{
+	cursor: pointer;
+}
+
+/* 짭적북적 */
+
+.complitBookList{
+	margin: 6rem auto 0rem;
+	width: 30rem;
+	}
+.complitBookList > div{
+	display: flex;
+	text-align: center;
+	font-size: 1.2rem;
+	align-items: center;
+	justify-content: space-around;
+}
+.complitBookList > div:nth-child(1n){
+	background-color: #FFE3E3; /* 붉은색 */
+	border-radius: 5px;
+	
+}
+.complitBookList > div:nth-child(2n){
+	background-color: #C9CCD5; /* 노란색 */
+	border-radius: 2px;
+	position: relative;
+	left: -50px;
+}
+.complitBookList > div:nth-child(3n){
+	background-color: #E4D8DC; /* 연두색 */
+	border-radius: 10px;
+	position: relative;
+	left: 30px;
+}
+.complitBookList > div:nth-child(4n){
+	background-color: #93B5C6; /* 연두색 */
+	border-radius: 10px;
+	position: relative;
+	left: -30px;
+	color: #fff;
+}
+.pageName div {
+	display: inline-block;
+	margin-top: 1rem;
+	padding: 2px 7px;
+	background-color: #FDFAF6;
+	color: #02475E;
+	text-align: center;
+	width: 8rem;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 1rem;
+}
+.bookPlaner-empty{
+	width: 20rem;
+	height: 5rem;
+	background-color: #eeeeee;
+	margin-left: 4rem;
+}
+.bookPlaner-top{
+	display: flex;
+	justify-content: space-around;
+}

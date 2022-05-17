@@ -1,0 +1,269 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="/resources/css/club/club_detail.css" rel="stylesheet">
+<style type="text/css">
+.book-bg{
+ 	background-color: #F7F7F5;
+ 	text-align: center;
+ 	height: 250px;
+ 	width: 250px;
+}
+.book-bg img{
+	width: 110px;
+	height: 164px;
+	image-rendering: -webkit-optimize-contrast;
+	border-radius: 0;
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+.ranking-title{
+	font-size: 20px;
+}
+.mb-title{
+	font-size: 15px;
+	color: blue;
+}
+.mb-writer{
+	font-size: 14px;
+}
+.month-book{
+	 font-size: 18px;
+	 display: inline-block;
+}
+.club-img{
+	display: inline-block;
+	margin-right: 150px;
+}
+img,
+svg {
+  vertical-align: baseline;
+}
+</style>
+</head>
+<body>
+<div class="container">
+	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+	<div class="row">
+		<div class="col-9 justify-content-md-end">
+			<div class="club-img"><img src="/resources/images/club/${club.cbAtName }"></div>
+				<div class="month-book">
+					5월의 책
+					<c:if test="${sessionScope.loginInfo.clubAdmin eq 'Y' and sessionScope.loginInfo.clubCode eq club.clubCode}">
+						<button type="button" class="book-btn btn btn-sm" onclick="location.href='/clubAdmin/monthlyBookUpdate';">수정하기</button>
+					</c:if>
+					<div class="book-bg">
+							<div><img class="thumbnail" alt="" src="${monthlyBk.mbThumbnail }"></div>
+						<div class="mb-title">${monthlyBk.mbTitle }</div>
+						<div class="mb-writer">${monthlyBk.mbWriter }</div>
+					</div>
+				</div>
+				<div>
+					<div class="club-name">${club.clubName }</div>
+				</div>
+				<div>
+					<div class="club-intro">${club.clubIntro}</div>
+				</div>
+				<div>
+					<div class="club-name">모임 인원</div><div class="club-1">${club.clubNumberPeople} / ${club.clubHeadCnt }&nbsp;&nbsp;&nbsp;&nbsp;</div>
+					<div class="dropdown">
+						<a href="#" class="px-2" id="triggerId3" data-bs-toggle="dropdown" aria-expanded="false">click
+					</a>
+						<div class="dropdown-menu" aria-labelledby="triggerId3">
+							<table class="memListT table table-hover">
+								<tr>
+									<c:forEach items="${memList }" var="mem" >
+											<td>
+												<div class="user-info__img"><img src="/resources/images/member/${mem.memImage }"></div>
+												<div class="mem-name">${mem.memName }</div>
+											</td>
+									</c:forEach>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div>
+					<div class="club-name">모임 장소</div><div class="club-1">${club.clubPlace }</div>
+				</div>
+				<div>
+					<div class="club-name">모임 일정</div><div class="club-1">첫모임 ${club.clubDate }</div>
+				</div>
+				<div>
+					<div class="club-name">독후감&nbsp;&nbsp;&nbsp;&nbsp;</div><div class="club-1">매 모임 2일 전까지 클럽 게시판에 제출 | 최소 글자수 400자</div>
+				</div>
+				<div>
+					<details>
+						<summary>북클럽 소개📚</summary>
+						<div class="club-info"><div>${club.clubInfo }</div></div>
+					</details>
+				</div>
+					 <c:choose>
+						<c:when test="${club.clubNumberPeople eq club.clubHeadCnt }">
+							<a href="#" class="end-btn btn btn-secondary disabled">신청마감</a>
+						</c:when>
+						<c:otherwise>
+				  	  		<a href="#" class="join-btn btn" onclick="clubJoin('${club.clubCode}','${clubApplyCode }');">신청하기</a>
+						</c:otherwise>	
+					</c:choose> 
+					<input type="hidden" id="memId" value="${sessionScope.loginInfo.memId }">
+					<input type="hidden" id="clubAdmin" value="${sessionScope.loginInfo.clubAdmin }">
+					<input type="hidden" id="clubCode" value="${sessionScope.loginInfo.clubCode }">
+				<table class="board-table table table-hover table-border text-center">
+				<colgroup>
+					<col width="10%">
+					<col width="*">
+					<col width="10%">
+					<col width="20%">
+					<col width="10%">
+					<thead>
+					<tr>
+						<th scope="col">No</th>
+						<th scope="col">제목</th>
+						<th scope="col">작성자</th>
+						<th scope="col">날짜</th>
+						<th scope="col">조회수</th>
+					</tr>
+					</thead>
+					<tbody>
+					<c:forEach items="${noticeList }" var="notice">
+						<tr class="notic-tr">
+							<th><button type="button" class="btn btn-danger btn-sm">공지</button></th>
+							<c:choose>
+								<c:when test="${(sessionScope.loginInfo.clubCode eq notice.clubCode) || (sessionScope.loginInfo.isAdmin eq 'Y')}">
+									<th>
+										<a href="/club/clubBoardDetail?cbBoardNum=${notice.cbBoardNum }&&clubCode=${notice.clubCode}">
+											${notice.cbBoardTitle } (${notice.cbCmtCount })
+											</a>
+									</th>
+								</c:when>
+								<c:otherwise>
+									<th>
+										<a href="" onclick="cbDetail();">${notice.cbBoardTitle } (${notice.cbCmtCount })</a>
+									</th>
+								</c:otherwise>
+							</c:choose>
+							<th>${notice.memName }</th>
+							<th>${notice.cbBoardDate }</th>
+							<th>${notice.cbReadCnt }</th>
+						</tr>
+					</c:forEach>
+					<c:choose>
+						<c:when test="${not empty boardList}">
+							<c:forEach items="${boardList }" var="boardInfo" varStatus="status">
+								<tr>
+									<td>${clubBoardVO.totalCnt - boardInfo.rowNum + 1 }</td>
+									<c:choose>
+										<c:when test="${sessionScope.loginInfo.clubCode eq boardInfo.clubCode || (sessionScope.loginInfo.isAdmin eq 'Y')}">
+											<td><a href="/club/clubBoardDetail?cbBoardNum=${boardInfo.cbBoardNum }&&clubCode=${boardInfo.clubCode}">${boardInfo.cbBoardTitle } (${boardInfo.cbCmtCount })</a></td>
+										</c:when>
+										<c:otherwise>
+											<td><a href="" onclick="cbDetail();">${boardInfo.cbBoardTitle } (${boardInfo.cbCmtCount })</a></td>
+										</c:otherwise>
+									</c:choose>
+									<td>${boardInfo.memName }</td>
+									<td>${boardInfo.cbBoardDate }</td>
+									<td>${boardInfo.cbReadCnt }</td>
+								</tr>
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+							<tr>
+								<td colspan="5">
+									등록된 게시글이 없습니다.
+								</td>
+							</tr>
+						</c:otherwise>
+					</c:choose>
+					</tbody>
+				</table>
+				<div class="board-btn d-grid gap-2 d-md-flex justify-content-md-end" style="margin-bottom: 20px;">
+					<c:if test="${sessionScope.loginInfo.clubCode eq club.clubCode  }">
+						<button type="button" class="write-btn btn btn-sm" onclick="location.href='/club/clubBoardWrite?clubCode=${club.clubCode}';">글쓰기</button>
+					</c:if>
+					<c:if test="${sessionScope.loginInfo.clubAdmin eq 'Y' and sessionScope.loginInfo.clubCode eq club.clubCode}">
+						<button type="button" class="write-btn btn btn-sm" onclick="location.href='/club/clubDetailUpdate?clubCode=${club.clubCode}';">수정</button>
+					</c:if>
+				</div>
+				<div class="row">
+					<div class="col-6">
+						<div class="d-grid gap-2 d-md-flex justify-content-center">
+							<nav aria-label="Page navigation example">
+								<ul class="pagination pagination-sm">
+									<li class="page-item <c:if test="${!clubBoardVO.prev }">disabled</c:if>">
+									<a class="page-link" href="/club/clubDetail?nowPage=${clubBoardVO.beginPage - 1 }&&clubCode=${clubBoardVO.clubCode }"
+										aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+									</a></li>
+									<c:forEach begin="${clubBoardVO.beginPage }" end="${clubBoardVO.endPage }" var="pageIndex">
+											<li class="page-item <c:if test="${clubBoardVO.nowPage eq pageIndex }">active</c:if>"><a class="page-link" 
+											href="/club/clubDetail?nowPage=${pageIndex }&&clubCode=${clubBoardVO.clubCode }">${pageIndex }</a></li>
+										</c:forEach>
+									<li class="page-item <c:if test="${!clubBoardVO.next }">disabled</c:if>"><a class="page-link" href="/club/clubDetail?nowPage=${clubBoardVO.endPage + 1 }&&clubCode=${clubBoardVO.clubCode }"
+										aria-label="Next"> <span aria-hidden="true">&raquo;</span></a>
+									</li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+				<div class="d-grid gap-2 d-md-flex justify-content-end">
+					<form action="/club/clubDetail" method="post" id="searchForm">
+					<input type="hidden" value="1" id="nowPage" name="nowPage">
+					<input type="hidden" name="clubCode" value="${clubBoardVO.clubCode }">
+						<select id="sort" name="sort" <c:if test="${clubBoardVO.sort eq 'MEM_NAME'}">selected</c:if>>
+							<option value="CB_BOARD_TITLE">제목</option>
+							<option value="MEM_NAME">작성자</option>
+						</select>
+						<input type="text" class="keyword" name="keyword" maxlength="255" autocomplete="off">
+						<button class="img-button" type="submit" name="click">
+							<i class="fas fa-search"></i>
+						</button>
+					</form>
+				</div>
+			</div>
+			<div class="col-3">
+				<span class="ranking-title">5월 독서 랭킹📖</span>
+				<table class="rankingT table table-hover">
+					<c:forEach items="${memList }" var="mem" varStatus="status">
+						<tr>
+							<td>
+								<div class="ranking">${status.index + 1 }위</div>
+								<div class="user-info__img"><img alt="" src="/resources/images/member/${mem.memImage }" >
+									<div class="ranking-name">${mem.memName }
+									${mem.bookComplitCnt }권</div>
+								</div>
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
+				</div>
+			</div>
+	</div>
+
+<!-- 도서관 책 검색 -->
+<div class="modal fade" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/resources/js/club/club_detail.js"></script>
+</body>
+</html>
