@@ -17,27 +17,85 @@
 	float: left;
 	width: 50%;
 }
+.sBar{
+ position: relative;
+ height: 300px;
+ background: url("/resources/images/common/2016110800999_0.jpg") no-repeat 50% 0;
+ background-size: cover;
+ padding: 0;
+ z-index:10; 
+}
+.testsearchBar{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+    padding: 0;
+    width:100%;
+    height:100%;
+ 	background-color: #ffffff;
+    background-color: rgba( 255, 255, 255, 0.5 );
+    text-align: center;
+    z-index:10; 
+}
+.realSearch{
+	width: 100%;
+	z-index:10; 
+}
+.realSearch select{
+	background-color: #F8B400;
+	width: 150px;
+	height: 70px;
+	text-align: center;
+	margin-right: 0;
+}
+.realSearch input{
+	outline: none;
+	height: 70px;
+	width: 700px;
+	margin-left: 0;
+	margin-right: 0;
+}
+.realSearch button{
+	margin-left: 0;
+	margin-right: 0;
+	height: 70px;
+	width: 150px;
+	font-size: large;
+}
+.vision{
+	position: absolute;
+    left: 30px;
+    top: 5px;
+    color: #1A3C40;
+    font-weight: bold;
+    font-size: large;
+}
 </style>
 </head>
 <body>
+	<div class="sBar">
+			<div class="testsearchBar">
+				<div class="vision">늘 봄처럼 늘봄 같이...</div>
+				<div class="realSearch">
+				<form action="/book/searchBook" method="post">
+				<!-- 검색구분 선택 -->
+					<select name="searchSub">
+						<option value="all" >전체</option>
+						<option value="title">도서명</option>
+						<option value="writer">저자</option>
+						<option value="publisher">출판사</option>
+						<option value="keyword">키워드</option>
+					</select>
+					<input type="text" name="searchTxt" placeholder="소장자료 검색">
+					<button type="submit" class="btn btn-success btn-sm searchBtn" onclick="location.href='book/searchBook';">검 색</button>
+					
+				</form>
+				</div>
+			</div> 
+		</div>
+	</div>
 <div class="container">
-	<div class="searchBar">
-	
-		<form action="/book/searchBook" method="post" id="searchBook">
-		<!-- 검색구분 선택 -->
-			<select name="searchSub">
-				<option value="all" >전체</option>
-				<option value="title">도서명</option>
-				<option value="writer">저자</option>
-				<option value="publisher">출판사</option>
-				<option value="keyword">키워드</option>
-			</select>
-			<input type="text" name="searchTxt" placeholder="소장자료 검색">
-			<button type="submit" class="btn btn-success btn-sm" onclick="location.href='book/searchBook';">검색</button>
-		</form>
-	</div> 
-	
-	
+
 	<div class="slide col-4" style="display: inline-block;">
 	<!-- 신착도서 슬라이드  -->
 	<div class="goNewBookList" >

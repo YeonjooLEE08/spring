@@ -456,8 +456,9 @@ li {
   color: black;
   text-align: center;
   text-decoration: none;
+  letter-spacing: 0.05em;
   display: block;
-  padding: 14px 60px;
+  padding: 14px 90px;
   border-right: 1px solid rgba(0,0,0,0.15);
 }
 
@@ -469,23 +470,20 @@ li {
   position: absolute;
   background: #F7F7F5;
   opacity: 0;
-  visibility: hidden;
+  visibility: visible;
   transition: all 0.15s ease-in;
-  z-index: 999;
 }
 
 #sub-menu > li {
- padding: 16px 28px;
+  padding: 14px 70px;
   border-bottom: 1px solid rgba(0,0,0,0.15);
   text-align: left;
-  
-  }
+}
 
 #sub-menu > li >  a {
   color: #427a4e;
   text-decoration: none;
   text-align: left;
-  font-size: .9rem;
 }
 
 #main-menu > li:hover #sub-menu {

@@ -23,6 +23,7 @@
  background: url("/resources/images/common/2016110800999_0.jpg") no-repeat 50% 0;
  background-size: cover;
  padding: 0;
+ z-index:10; 
 }
 .testsearchBar{
 	display: flex;
@@ -34,9 +35,11 @@
  	background-color: #ffffff;
     background-color: rgba( 255, 255, 255, 0.5 );
     text-align: center;
+    z-index:10; 
 }
 .realSearch{
 	width: 100%;
+	z-index:10; 
 }
 .realSearch select{
 	background-color: #F8B400;
@@ -48,6 +51,7 @@
 .realSearch input{
 	outline: none;
 	height: 70px;
+	width: 700px;
 	margin-left: 0;
 	margin-right: 0;
 }
@@ -55,6 +59,8 @@
 	margin-left: 0;
 	margin-right: 0;
 	height: 70px;
+	width: 150px;
+	font-size: large;
 }
 .vision{
 	position: absolute;
@@ -68,30 +74,34 @@
 </head>
 <body>
 	<div class="sBar">
-		<div class="testsearchBar">
-			<div class="vision">늘 봄처럼 늘봄 같이...</div>
-			<div class="realSearch">
-			<form action="/book/searchBook" method="post">
-			<!-- 검색구분 선택 -->
-				<select name="searchSub">
-					<option value="all" >전체</option>
-					<option value="title">도서명</option>
-					<option value="writer">저자</option>
-					<option value="publisher">출판사</option>
-					<option value="keyword">키워드</option>
-				</select>
-				<input type="text" name="searchTxt" placeholder="소장자료 검색">
-				<button type="submit" class="btn btn-success btn-sm searchBtn" onclick="location.href='book/searchBook';">검색하기</button>
-				
-			</form>
-			</div>
-		</div> 
+			<div class="testsearchBar">
+				<div class="vision">늘 봄처럼 늘봄 같이...</div>
+				<div class="realSearch">
+				<form action="/book/searchBook" method="post">
+				<!-- 검색구분 선택 -->
+					<select name="searchSub">
+						<option value="all" >전체</option>
+						<option value="title">도서명</option>
+						<option value="writer">저자</option>
+						<option value="publisher">출판사</option>
+						<option value="keyword">키워드</option>
+					</select>
+					<input type="text" name="searchTxt" placeholder="소장자료 검색">
+					<button type="submit" class="btn btn-success btn-sm searchBtn" onclick="location.href='book/searchBook';">검 색</button>
+					
+				</form>
+				</div>
+			</div> 
+		</div>
 	</div>
-	
-	
 <div class="container">
-	
+
+	<div class="slide col-4" style="display: inline-block;">
 	<!-- 신착도서 슬라이드  -->
+	<div class="goNewBookList" >
+		<div class="slideTitle">신착도서</div>
+		<div class="plusBtn"><i class="fa-solid fa-plus" style=" margin-right:5px;"></i><a href="/book/selectNewBook1">더보기</a></div>
+	</div>
 	<div class="newBookSlide">
 		 <div id="carouselExampleIndicators2" class="carousel carousel-dark slide" data-bs-ride="carousel" style="max-width: 100%; height: 100%;">
 		      <div class="carousel-indicators">
@@ -123,7 +133,50 @@
 		      </div>
 			</div>
 	</div>
-	<div class="rcdBook"  >
+	</div>
+	
+	
+	<div class="slide col-4" style="display: inline-block;">
+	<!-- 추천도서 랭킹 슬라이드  -->
+	<div class="goNewBookList" >
+		<div class="slideTitle">추천도서</div>
+		<div class="plusBtn"><i class="fa-solid fa-plus" style=" width: 30px; margin-right:5px;"></i><a href="/book/selectRcdBook1">더보기</a></div>
+	</div>
+	<div class="newBookSlide">
+		 <div id="carouselExampleIndicators2" class="carousel carousel-dark slide" data-bs-ride="carousel" style="max-width: 100%; height: 100%;">
+		      <div class="carousel-indicators">
+		         <button type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+		         <button type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide-to="1" aria-label="Slide 2"></button>
+		         <button type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide-to="2" aria-label="Slide 3"></button>
+		      </div>
+		      <div class="carousel-inner rcdBookImg">
+			  <c:forEach items="${bookList}" var="book" varStatus="status">
+			  <c:set var="i" value="${i+1 }"/>
+			      <div class="carousel-item <c:if test="${status.index == 0 }">active</c:if>" onclick="location.href='/book/bookDetail?bookCode=${book.bookCode }&memId=${sessionScope.loginInfo.memId}'">
+			         <div class="card">
+			           <div class="row">
+			             <div class="text-center">
+			             	<div class="img">
+			             	<span class="rank"  style=" margin-left: 100px; " >
+			             				<i class="fa-solid fa-medal" style="width: 100%; height: 100%; color: gold;"></i>
+			             	</span>
+			             		<img src="/resources/images/book/${book.bkImg }"  alt="..."  class="img-fluid rounded-start">
+			             	</div>
+			             	<div class = "newBookTitle">
+			             		${book.title }
+			             	</div>
+			               
+			             </div>
+			           </div>
+			         </div>
+			       </div>
+		       </c:forEach>
+		      </div>
+			</div>
+	</div>
+	</div>
+</div>
+<%-- 	<div class="rcdBook"  >
 		<h3>이달의 인기도서</h3>
 		<a href="/book/selectRcdBook">확인하러가기</a>
 			
@@ -145,7 +198,27 @@
 		</div>
 	</div>
 </div>
-
+ --%>
+ <c:if test="${sessionScope.loginInfo.isOd eq 'Y' }">
+	<script type="text/javascript">
+		
+	        if (!confirm("연체 중인 도서가 있습니다. 대여 목록 상세조회로 이동할까요?")) {
+	            alert("취소(아니오)를 누르셨습니다.");
+	        } else {
+	            location.href='/member/borrowListU?memId=${loginInfo.memId }';
+	        } 
+	</script>
+</c:if>
+ <c:if test="${sessionScope.loginInfo.isPwdTemp eq 'Y' }">
+	<script type="text/javascript">
+        if (!confirm("새로운 비밀번호로 설정해 주세요.")) {
+            alert("언제든지 내 정보 상세보기에서 수정 가능합니다.");
+        } 
+        else {
+            location.href='/member/myPageDetail';
+        }
+	</script>
+</c:if>
 <script type="text/javascript" src="/resources/js/book/rcd_book.js?ver=1"></script>
 </body>
 </html>

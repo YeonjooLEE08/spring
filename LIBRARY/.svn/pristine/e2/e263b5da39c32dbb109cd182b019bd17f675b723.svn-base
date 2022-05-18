@@ -83,24 +83,25 @@
 			<ul id="main-menu">
 				<li><a href="/admin/libraryInfo">도서관소개</a>
 					<ul id="sub-menu">
-						<li ><a href="/admin/libraryInfo">인삿말</a></li>
-						<li ><a href="/admin/libraryHistory">연혁</a></li>
-						<li ><a href="/admin/libraryLocation">찾아오시는길</a></li>
+						<li id="nop" ><a href="/admin/libraryInfo">인삿말</a></li>
+						<li id="nop" ><a href="/admin/libraryHistory">연혁</a></li>
+						<li id="nop" ><a href="/admin/libraryLocation">찾아오시는길</a></li>
 					</ul>
 				</li>
 				<li><a href="/book/bookListU">자료검색</a>
 					<ul id="sub-menu">
-						<li ><a href="/book/hopeBookInfo">희망도서 신청</a></li>
-						<li ><a href="/book/selectNewBook1">신착도서</a></li>
-						<li ><a href="/book/selectRcdBook1">추천도서</a></li>
-						<li ><a href="/book/bookListU">자료검색</a></li>
+						<li id="nop" ><a href="/book/hopeBookInfo">희망도서 신청 안내</a></li>
+						<li id="nop" ><a href="/book/hopeBookForm">희망도서신청</a></li>
+						<li id="nop" ><a href="/book/selectNewBook1">신착도서</a></li>
+						<li id="nop" ><a href="/book/selectRcdBook1">추천도서</a></li>
+						<li id="nop" ><a href="/book/bookListU">자료검색</a></li>
 					</ul>
 				</li>
 				<li ><a href="/board/ntBoardList">참여마당</a>
 					<ul id="sub-menu">
-						<li ><a href="/board/ntBoardList">공지사항</a></li>
-						<li ><a href="/otherB/freeBoard">자유게시판</a></li>
-						<li ><a href="/otherB/qnaBoard">Q&A</a></li>
+						<li id="nop" ><a href="/board/ntBoardList">공지사항</a></li>
+						<li id="nop" ><a href="/otherB/freeBoard">자유게시판</a></li>
+						<li id="nop" ><a href="/otherB/qnaBoard">Q&A</a></li>
 					</ul>
 				</li>
 				<li>
@@ -109,8 +110,8 @@
 				<li >
 					<a href="/club/clubList">북클럽</a>
 					<ul id="sub-menu">
-						<li><a href="/club/clubInfo">북클럽 이용</a></li>
-						<li ><a href="/club/clubList">북클럽 조회</a></li>
+						<li id="nop"><a href="/club/clubInfo">북클럽 이용안내</a></li>
+						<li id="nop" ><a href="/club/clubList">북클럽 조회</a></li>
 					</ul>
 				</li>
 				<c:if test="${sessionScope.loginInfo.isAdmin eq 'Y' }" > 
