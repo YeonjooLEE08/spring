@@ -17,8 +17,8 @@
 <body>
 <div class="container">
 	<div class="subTit">
-      <div class="line_map">홈 > 관리자메뉴 > 대여 목록 조회</div>
-      <div class="tit">대여 목록 조회</div>
+      <div class="line_map">홈 > 관리자메뉴 > 예약 목록 조회</div>
+      <div class="tit">예약 목록 조회</div>
    </div>
 <table class="table table-hover table-border text-center">
 		 <colgroup>

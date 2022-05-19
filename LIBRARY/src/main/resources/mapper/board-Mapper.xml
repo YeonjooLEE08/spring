@@ -52,15 +52,29 @@
 		WHERE FILE_NAME = '%jpg'
 	</update>
 	
+	
 	<!-- 공지사항 글 갯수 조회 -->
 	<select id="selectBoardCnt" resultType="int">
 		SELECT COUNT(NT_CODE)
 		FROM NT_BOARD
-		<if test="searchTxt!=null and !searchTxt.equals('')">
-			WHERE ${sort} LIKE '%'||#{searchTxt}||'%'
-		</if>
+
 	</select>
-		
+	
+	<!-- 공지사항 글 검색 갯수 조회 -->
+	<select id="selectBoardSearchCnt" resultType="int">
+		SELECT COUNT(NT_CODE)
+		FROM NT_BOARD
+		<choose>
+			<when test="searchSub != 'all' and searchTxt !=''">
+				WHERE ${searchSub} LIKE '%'||#{searchTxt}||'%'
+			</when>
+			<when test="searchSub == 'all' and searchTxt !=''">
+				WHERE NT_TITLE LIKE '%'||#{searchTxt}||'%'
+				OR NT_CONTENT LIKE '%'||#{searchTxt}||'%'
+			</when>
+		</choose>
+	</select>
+	
 	<!-- 공지사항 조회 -->
 	<select id="selectNtBoard" resultMap="ntBoardInfo">
 		SELECT NT_CODE
@@ -124,23 +138,49 @@
 	<!-- 공지사항 글 검색 -->
 	<select id="selectSearchNt" resultMap="ntBoardInfo">
 		SELECT NT_CODE
-			, NT_TITLE
-			, NT_CONTENT
-			, TO_CHAR(NT_CREATE_DATE, 'YYYY-MM-DD') AS NT_CREATE_DATE
-			, MEM_ID
-			, MEM_NAME
-			, ROWNUM
-			, NT_RD_CNT
-		FROM NT_BOARD
-		<choose>
-			<when test="searchSub != 'all'">WHERE ${searchSub} LIKE '%'||#{searchTxt}||'%'</when>
-			<when test="searchSub == 'all'">
-				WHERE NT_TITLE LIKE '%'||#{searchTxt}||'%'
-				OR NT_CONTENT LIKE '%'||#{searchTxt}||'%'
-			</when>
-		</choose>
-		
-		ORDER BY NT_CREATE_DATE DESC
+		, NT_TITLE
+		, NT_CONTENT
+		, MEM_NAME
+		, TO_CHAR(NT_CREATE_DATE,'YYYY-MM-DD') AS NT_CREATE_DATE 
+		, ROW_NUM
+		, NT_RD_CNT
+		, FILE_EXT
+		, FILE_NAME
+		FROM 
+		(
+			SELECT NT_CODE
+				, NT_TITLE
+				, NT_CONTENT
+				, MEM_NAME
+				, NT_CREATE_DATE 
+				, NT_RD_CNT
+				, FILE_EXT
+				, FILE_NAME
+				, ROWNUM AS ROW_NUM
+			FROM 
+			(
+				SELECT NT_CODE
+					, NT_TITLE
+					, NT_CONTENT
+					, NT_CREATE_DATE
+					, MEM_ID
+					, MEM_NAME
+					, ROWNUM
+					, FILE_NAME
+					, FILE_EXT
+					, NT_RD_CNT
+				FROM NT_BOARD
+				<choose>
+					<when test="searchSub != 'all'">WHERE ${searchSub} LIKE '%'||#{searchTxt}||'%'</when>
+					<when test="searchSub == 'all'">
+						WHERE NT_TITLE LIKE '%'||#{searchTxt}||'%'
+						OR NT_CONTENT LIKE '%'||#{searchTxt}||'%'
+					</when>
+				</choose>
+				ORDER BY NT_CREATE_DATE DESC
+				)
+		)
+		WHERE ROW_NUM &gt; =#{startNum} AND ROW_NUM &lt; = #{endNum}
 	</select>
 	
 	<!-- 공지사항 글 수정 -->

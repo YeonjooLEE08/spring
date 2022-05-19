@@ -86,7 +86,7 @@ public class BoardController {
 	public String selectSearchNt(Model model, NtBoardVO ntBoardVO) {
 		//-----------------페이징 정보 세팅
 		//1.전체 데이터의 개수 조회
-		int listCnt = boardService.selectBoardCnt(ntBoardVO);
+		int listCnt = boardService.selectBoardSearchCnt(ntBoardVO);
 		ntBoardVO.setTotalCnt(listCnt);
 		
 		System.out.println(ntBoardVO.getTotalCnt());

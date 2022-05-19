@@ -496,7 +496,7 @@
 	
 	<!-- 재대출 제한 확인 -->
 	<select id="selectRtDate" resultType="String">
-		SELECT TO_CHAR(RT_DATE, 'YYYY-MM-DD') AS RT_DATE
+		SELECT DISTINCT TO_CHAR(RT_DATE, 'YYYY-MM-DD') AS RT_DATE
 		FROM BORROW
 		WHERE RT_DATE = (SELECT MAX(RT_DATE)
 						FROM BORROW
