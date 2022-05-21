@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문을 mapper태그 안에 작성 -->
+<mapper namespace="boardMapper">
+	<resultMap type="com.kh.library.board.vo.NtBoardVO" id="ntBoardInfo">
+		<id column = "NT_CODE"  					property="ntCode"/>
+		<result column="NT_TITLE" 					property="ntTitle"/>
+		<result column="NT_CONTENT" 				property="ntContent"/>
+		<result column="NT_CREATE_DATE" 			property="ntCreateDate"/>
+		<result column="NT_RD_CNT" 					property="ntRdCnt"/>
+		<result column="MEM_ID" 					property="memId"/>
+		<result column="MEM_NAME" 					property="memName"/>
+		<result column="SEARCH_SUB" 				property="searchSub"/>
+		<result column="SEARCH_TXT" 				property="searchTxt"/>
+		<result column="ROWNUM" 					property="rowNum"/>
+		<result column="ROW_NUM" 					property="rowNum"/>
+		<result column="FILE_NAME" 					property="fileName"/>
+		<result column="FILE_EXT" 					property="fileExt"/>
+		<result column="sort" 						property="sort"/>
+		
+	</resultMap>
+	
+	<!-- 글 등록 -->
+	<insert id="insertNtBoard">
+		INSERT INTO NT_BOARD(
+			NT_CODE
+			, NT_TITLE
+			, NT_CONTENT
+			, MEM_ID
+			, MEM_NAME
+			, FILE_NAME
+		) VALUES (
+			#{ntCode}
+			, #{ntTitle}
+			, #{ntContent}
+			, #{memId}
+			, #{memName}
+			, #{fileName}
+		)
+	</insert>
+	
+	<!-- 다음 ntCode 조회 -->
+	<select id="selectNextNtCode" resultType="String">
+		SELECT 'NT_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(NT_CODE, 4))),0) +1, 3, '0')
+		FROM NT_BOARD
+	</select>
+	
+	<!-- 첨부파일 확장자 조회 -->
+	<update id="updateFileExt">
+		UPDATE NT_BOARD
+		SET FILE_EXT = 'jpg'
+		WHERE FILE_NAME = '%jpg'
+	</update>
+	
+	
+	<!-- 공지사항 글 갯수 조회 -->
+	<select id="selectBoardCnt" resultType="int">
+		SELECT COUNT(NT_CODE)
+		FROM NT_BOARD
+
+	</select>
+	
+	<!-- 공지사항 글 검색 갯수 조회 -->
+	<select id="selectBoardSearchCnt" resultType="int">
+		SELECT COUNT(NT_CODE)
+		FROM NT_BOARD
+		<choose>
+			<when test="searchSub != 'all' and searchTxt !=''">
+				WHERE ${searchSub} LIKE '%'||#{searchTxt}||'%'
+			</when>
+			<when test="searchSub == 'all' and searchTxt !=''">
+				WHERE NT_TITLE LIKE '%'||#{searchTxt}||'%'
+				OR NT_CONTENT LIKE '%'||#{searchTxt}||'%'
+			</when>
+		</choose>
+	</select>
+	
+	<!-- 공지사항 조회 -->
+	<select id="selectNtBoard" resultMap="ntBoardInfo">
+		SELECT NT_CODE
+			, NT_TITLE
+			, NT_CONTENT
+			, MEM_NAME
+			, TO_CHAR(NT_CREATE_DATE,'YYYY-MM-DD') AS NT_CREATE_DATE 
+			, ROW_NUM
+			, NT_RD_CNT
+			, FILE_EXT
+			, FILE_NAME
+		FROM 
+		(
+			SELECT NT_CODE
+				, NT_TITLE
+				, NT_CONTENT
+				, MEM_NAME
+				, NT_CREATE_DATE 
+				, NT_RD_CNT
+				, FILE_EXT
+				, FILE_NAME
+				, ROWNUM AS ROW_NUM
+			FROM
+			(
+				SELECT NT_CODE
+					, NT_TITLE
+					, NT_CONTENT
+					, MEM_NAME
+					, NT_CREATE_DATE 
+					, NT_RD_CNT
+					, FILE_EXT
+					, FILE_NAME	
+				FROM NT_BOARD
+				ORDER BY NT_CREATE_DATE DESC
+			)
+		)
+		WHERE ROW_NUM &gt; =#{startNum} AND ROW_NUM &lt; = #{endNum}
+	</select>
+	
+	<!-- 공지사항 상세보기 -->
+	<select id="selectNtBoardDetail" resultMap="ntBoardInfo">
+		SELECT NT_CODE
+			, NT_TITLE
+			, NT_CONTENT
+			, TO_CHAR(NT_CREATE_DATE, 'YYYY-MM-DD') AS NT_CREATE_DATE
+			, MEM_ID
+			, MEM_NAME
+			, NT_RD_CNT
+			, FILE_NAME
+		FROM NT_BOARD
+		WHERE NT_CODE=#{ntCode}
+	</select>
+	
+	<!-- 공지사항 조회수 업데이트 -->
+	<update id="updateNtBoardRdCnt">
+		UPDATE NT_BOARD
+		SET NT_RD_CNT = NT_RD_CNT+1
+		WHERE NT_CODE= #{ntCode}
+	</update>
+	
+	<!-- 공지사항 글 검색 -->
+	<select id="selectSearchNt" resultMap="ntBoardInfo">
+		SELECT NT_CODE
+		, NT_TITLE
+		, NT_CONTENT
+		, MEM_NAME
+		, TO_CHAR(NT_CREATE_DATE,'YYYY-MM-DD') AS NT_CREATE_DATE 
+		, ROW_NUM
+		, NT_RD_CNT
+		, FILE_EXT
+		, FILE_NAME
+		FROM 
+		(
+			SELECT NT_CODE
+				, NT_TITLE
+				, NT_CONTENT
+				, MEM_NAME
+				, NT_CREATE_DATE 
+				, NT_RD_CNT
+				, FILE_EXT
+				, FILE_NAME
+				, ROWNUM AS ROW_NUM
+			FROM 
+			(
+				SELECT NT_CODE
+					, NT_TITLE
+					, NT_CONTENT
+					, NT_CREATE_DATE
+					, MEM_ID
+					, MEM_NAME
+					, ROWNUM
+					, FILE_NAME
+					, FILE_EXT
+					, NT_RD_CNT
+				FROM NT_BOARD
+				<choose>
+					<when test="searchSub != 'all'">WHERE ${searchSub} LIKE '%'||#{searchTxt}||'%'</when>
+					<when test="searchSub == 'all'">
+						WHERE NT_TITLE LIKE '%'||#{searchTxt}||'%'
+						OR NT_CONTENT LIKE '%'||#{searchTxt}||'%'
+					</when>
+				</choose>
+				ORDER BY NT_CREATE_DATE DESC
+				)
+		)
+		WHERE ROW_NUM &gt; =#{startNum} AND ROW_NUM &lt; = #{endNum}
+	</select>
+	
+	<!-- 공지사항 글 수정 -->
+	<update id="updateNtBoardDetail">
+		UPDATE NT_BOARD
+		SET NT_TITLE = #{ntTitle}
+			, NT_CONTENT = #{ntContent}
+		WHERE NT_CODE= #{ntCode}
+	</update>
+	
+	<!-- 공지사항 글 삭제 -->
+	<delete id="deleteNtBoardDetail">
+		DELETE NT_BOARD
+		WHERE NT_CODE = #{ntCode}
+	</delete>	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

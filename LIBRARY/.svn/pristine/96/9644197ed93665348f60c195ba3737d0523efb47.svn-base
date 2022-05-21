@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문을 mapper태그 안에 작성 -->
+<mapper namespace="clubMapper">
+	<resultMap type="com.kh.library.club.vo.ClubVO" id="club">
+		<id column="CLUB_CODE" 				property="clubCode"/>
+		<result column="CLUB_NAME" 			property="clubName"/>
+		<result column="CLUB_HEAD_CNT" 		property="clubHeadCnt"/>
+		<result column="CLUB_COMPLIT_CNT" 	property="clubComplitCnt"/>
+		<result column="MEM_ID" 			property="memId"/>
+		<result column="MEM_NAME" 			property="memName"/>
+		<result column="CLUB_INTRO" 		property="clubIntro"/>
+		<result column="CLUB_DATE" 			property="clubDate"/>
+		<result column="CLUB_NUMBER_PEOPLE"	property="clubNumberPeople"/>
+		<result column="KEYWORD" 			property="keyword"/>
+		<result column="ROW_NUM" 			property="rowNum"/>
+		<result column="CLUB_PLACE" 		property="clubPlace"/>
+		<result column="CLUB_INFO" 			property="clubInfo"/>
+		<result column="CB_AT_NAME"		 	property="cbAtName"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.club.vo.ClubBoardVO" id="boardInfo">
+		<id column="CB_BOARD_NUM" 			property="cbBoardNum"/>
+		<result column="CB_BOARD_TITLE" 	property="cbBoardTitle"/>
+		<result column="CB_BOARD_CONTENT" 	property="cbBoardContent"/>
+		<result column="CB_BOARD_DATE" 		property="cbBoardDate"/>
+		<result column="MEM_ID" 			property="memId"/>
+		<result column="MEM_NAME" 			property="memName"/>
+		<result column="CLUB_CODE" 			property="clubCode"/>
+		<result column="CB_CMT_COUNT" 		property="cbCmtCount"/>
+		<result column="SORT" 				property="sort"/>
+		<result column="KEYWORD" 			property="keyword"/>
+		<result column="ROW_NUM" 			property="rowNum"/>
+		<result column="CB_READ_CNT" 		property="cbReadCnt"/>
+		<result column="MEM_IMAGE" 			property="memImage"/>
+		<result column="CB_PIN" 			property="cbPin"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.club.vo.ClubBoardCmtVO" id="cmt">
+		<id column="CB_CMT_NUM" 			property="cbCmtNum"/>
+		<result column="CB_CMT_CONTENT" 	property="cbCmtContent"/>
+		<result column="CB_CMT_DATE" 		property="cbCmtDate"/>
+		<result column="MEM_ID"				property="memId"/>
+		<result column="MEM_NAME" 			property="memName"/>
+		<result column="MEM_IMAGE" 			property="memImage"/>
+		<result column="CB_BOARD_NUM" 		property="cbBoardNum"/>
+		<result column="CLUB_CODE" 			property="clubCode"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.club.vo.ClubApplyVO" id="apply">
+		<id column="CLUB_APPLY_CODE" 		property="clubApplyCode"/>
+		<result column="CLUB_CODE" 			property="clubCode"/>
+		<result column="MEM_ID" 			property="memId"/>
+		<result column="MEM_NAME" 			property="memName"/>
+		<result column="CLUB_APPLY_DATE" 	property="clubApplyDate"/>
+		<result column="CLUB_NAME" 			property="clubName"/>
+		<result column="MEM_IMAGE" 			property="memImage"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.club.vo.ClubImageVO" id="cbImg">
+		<id column="CB_IMG_CODE" 			property="cbImgCode"/>
+		<result column="CB_ORIGIN_NAME" 	property="cbOriginName"/>
+		<result column="CB_AT_NAME"		 	property="cbAtName"/>
+		<result column="CLUB_CODE" 			property="clubCode"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.library.club.vo.MonthlyBookVO" id="monthly">
+		<id column="MB_CODE" property="mbCode"/>
+		<result column="MB_TITLE" property="mbTitle"/>
+		<result column="MB_WRITER" property="mbWriter"/>
+		<result column="MB_PUBLISHER" property="mbPublisher"/>
+		<result column="MB_THUMBNAIL" property="mbThumbnail"/>
+		<result column="CLUB_CODE" property="clubCode"/>
+	
+	</resultMap>
+	
+	<!-- 이미지 코드 숫자 -->
+	<select id="selectNextClubImgCode" resultType="int">
+		SELECT NVL(MAX(TO_NUMBER(CB_IMG_CODE)),0)+1
+		FROM BOOK_CLUB_IMAGE
+	</select>
+	
+	<!-- 클럽이미지 첨부 -->
+	<insert id="inserClubImg">
+		INSERT INTO BOOK_CLUB_IMAGE (
+			CB_IMG_CODE
+			, CB_ORIGIN_NAME
+			, CB_AT_NAME
+			, CLUB_CODE
+		) VALUES (
+			 #{cbImgCode}
+			,#{cbOriginName}
+			,#{cbAtName}
+			,#{clubCode}
+		)		
+	</insert>
+	
+	<!--클럽코드 -->
+	<select id="selectNextClubCode" resultType="String">
+		SELECT 'CLUB_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CLUB_CODE, 6))), 0) + 1, 3, 0)
+		FROM BOOK_CLUB
+	</select>
+	
+	<!-- 클럽생성 -->
+	<insert id="insertClubCreate">
+		INSERT INTO BOOK_CLUB (  
+		    CLUB_CODE
+		    , CLUB_NAME
+		    , CLUB_HEAD_CNT
+		    , CLUB_INTRO
+		    , CLUB_PLACE
+		    , CLUB_DATE
+		    , MEM_ID
+		    , MEM_NAME
+		    , CLUB_INFO
+		    , CB_AT_NAME
+		) VALUES (
+		    #{clubCode}
+		    , #{clubName}
+		    , #{clubHeadCnt}
+		    , #{clubIntro}
+		    , #{clubPlace}
+		    , #{clubDate}
+		    , #{memId}
+		    , #{memName}
+		    , #{clubInfo}
+		    , #{cbAtName}
+		)
+	</insert>
+	
+	<!-- 모임장부여 -->
+	<update id="updateClubAdmin">
+		UPDATE BOOK_MEMBER
+		SET
+		CLUB_ADMIN = 'Y'
+		, CLUB_CODE = (SELECT 'CLUB_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CLUB_CODE, 6))), 0), 3, 0) AS CLUB_CODE FROM BOOK_CLUB)
+		WHERE MEM_ID = #{memId}
+	</update>
+	
+	<!-- 북클럽목록 조회 -->
+	<select id="selectClubList" resultMap="club">
+		SELECT CLUB_CODE
+		    , CLUB_NAME
+		    , CLUB_HEAD_CNT
+		    , CLUB_INTRO
+		    , CLUB_DATE 
+		    , MEM_ID
+		    , MEM_NAME
+		    , CLUB_NUMBER_PEOPLE
+		    , CLUB_PLACE
+		    , CB_AT_NAME
+	        , ROW_NUM
+		FROM
+		(
+			SELECT CLUB_CODE
+			    , CLUB_NAME
+			    , CLUB_HEAD_CNT
+			    , CLUB_INTRO
+			    , TO_CHAR(CLUB_DATE, 'MM/DD(DY)') AS CLUB_DATE
+			    , MEM_ID
+			    , MEM_NAME
+			    , CLUB_NUMBER_PEOPLE
+			    , CLUB_PLACE
+			    , CB_AT_NAME
+			    , ROWNUM AS ROW_NUM
+		    FROM
+		    (
+	       		SELECT B.CLUB_CODE
+				    , CLUB_NAME
+				    , CLUB_HEAD_CNT
+				    , CLUB_INTRO
+				    , TO_DATE(CLUB_DATE, 'YYYY-MM-DD') AS CLUB_DATE
+				    , MEM_ID
+				    , MEM_NAME
+				    , (SELECT COUNT(MEM_ID)
+				    	FROM BOOK_MEMBER 
+				    	WHERE CLUB_CODE = B.CLUB_CODE) AS CLUB_NUMBER_PEOPLE
+				    , CLUB_PLACE
+				    , I.CB_AT_NAME
+				FROM BOOK_CLUB B, BOOK_CLUB_IMAGE I
+				WHERE B.CLUB_CODE = I.CLUB_CODE
+		        <if test="keyword != null and !keyword.equals('')">
+		        AND KEYWORD LIKE '%'||#{keyword}||'%'
+		        </if>
+				ORDER BY CLUB_DATE
+		    )
+		)
+		WHERE ROW_NUM &gt; = #{startNum} AND ROW_NUM &lt; =  #{endNum}
+	</select>
+	
+	<!-- 북클럽 상세보기 -->
+	<select id="selectClubDetail" resultMap="club">
+		SELECT CLUB_CODE
+		    , CLUB_NAME
+		    , CLUB_HEAD_CNT
+		    , CLUB_INTRO
+		    , TO_CHAR(CLUB_DATE, 'MM/DD(DY)') AS CLUB_DATE
+		    , MEM_ID
+		    , MEM_NAME
+		    , CLUB_NUMBER_PEOPLE
+	    	, CLUB_INFO
+	    	, CLUB_PLACE
+	    	, CB_AT_NAME
+		FROM
+		(
+			SELECT CLUB_CODE
+			    , CLUB_NAME
+			    , CLUB_HEAD_CNT
+			    , CLUB_INTRO
+			    , TO_DATE(CLUB_DATE, 'YYYY-MM-DD') AS CLUB_DATE
+			    , MEM_ID
+			    , MEM_NAME
+			    , (SELECT COUNT(MEM_ID)
+		    	  FROM BOOK_MEMBER 
+		    	  WHERE CLUB_CODE = BOOK_CLUB.CLUB_CODE) AS CLUB_NUMBER_PEOPLE
+		    	, CLUB_INFO
+		    	, CLUB_PLACE
+		    	, CB_AT_NAME
+			FROM BOOK_CLUB
+			WHERE CLUB_CODE = #{clubCode}
+		)
+	</select>
+	
+	<!-- 북클럽 내용 수정 -->
+	<update id="updateClubDetail">
+		UPDATE BOOK_CLUB
+		SET
+		CLUB_NAME = #{clubName}
+		, CLUB_HEAD_CNT = #{clubHeadCnt}
+		, CLUB_INTRO = #{clubIntro}
+		, CLUB_INFO = #{clubInfo}
+		, CLUB_DATE = #{clubDate}
+		, CB_AT_NAME = #{cbAtName}
+		WHERE CLUB_CODE = #{clubCode}
+	</update>
+	
+	<!-- 이미지 업데이트 -->
+   <update id="updateClubImage">
+      UPDATE BOOK_CLUB_IMAGE
+      SET CB_ORIGIN_NAME = #{cbOriginName}
+         , CB_AT_NAME = #{cbAtName}
+      WHERE CLUB_CODE = #{clubCode}
+   </update>
+   
+   <!-- 수정 안 하면 원래 이미지 셀렉 -->
+   <select id="selectCbAtName" resultType="String">
+      SELECT CB_AT_NAME
+      FROM BOOK_CLUB_IMAGE
+      WHERE CLUB_CODE = #{clubCode}
+   </select>
+	
+	<!-- 북클럽 게시판 글쓰기 -->
+	<insert id="insertClubBoard">
+		INSERT INTO BOOK_CLUB_BOARD (
+			CB_BOARD_NUM
+			, CB_BOARD_TITLE
+			, CB_BOARD_CONTENT
+			, CLUB_CODE
+			, MEM_ID
+			, MEM_NAME
+			, MEM_IMAGE
+			, CB_PIN
+		) VALUES (
+			(SELECT 'CB_BOARD_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CB_BOARD_NUM, 10))), 0) + 1, 3, 0) AS CB_BOARD_NUM FROM BOOK_CLUB_BOARD)
+			, #{cbBoardTitle}
+			, #{cbBoardContent}
+			, #{clubCode}
+			, #{memId}
+			, #{memName}
+			, #{memImage}
+			, #{cbPin}
+		)
+	</insert>
+	
+	<!-- 북클럽 게시판 목록 조회  -->
+	<select id="selectClubBoardList" resultMap="boardInfo">
+		SELECT CB_BOARD_NUM
+	        , CB_BOARD_TITLE
+	        , CB_BOARD_DATE
+	        , MEM_ID
+	        , CLUB_CODE
+	        , MEM_NAME
+	        , CB_CMT_COUNT
+	        , CB_READ_CNT
+	        , ROW_NUM
+		FROM
+		(
+		    SELECT CB_BOARD_NUM
+		        , CB_BOARD_TITLE
+		        , CB_BOARD_DATE
+		        , MEM_ID
+		        , CLUB_CODE
+		        , MEM_NAME
+		        , CB_CMT_COUNT
+		        , CB_READ_CNT
+		        , ROWNUM AS ROW_NUM
+		    FROM
+		    (
+		        SELECT CB_BOARD_NUM
+		            , CB_BOARD_TITLE
+		            , TO_CHAR(CB_BOARD_DATE, 'YYYY.MM.DD') AS CB_BOARD_DATE
+		            , MEM_ID
+		            , CLUB_CODE
+		            , MEM_NAME
+		            , (SELECT COUNT(CB_CMT_NUM)
+		                FROM BOOK_CLUB_BOARD_COMMENT
+		                WHERE CB_BOARD_NUM = BOOK_CLUB_BOARD.CB_BOARD_NUM) AS CB_CMT_COUNT
+		            , CB_READ_CNT
+		        FROM BOOK_CLUB_BOARD
+		        WHERE CLUB_CODE = #{clubCode} 
+		        <if test="keyword != null and !keyword.equals('')">
+		        AND ${sort} LIKE '%'||#{keyword}||'%'
+		        </if>
+		        ORDER BY CB_BOARD_NUM DESC
+		    )
+		)
+		WHERE ROW_NUM &gt; = #{startNum} AND ROW_NUM &lt; =  #{endNum}
+	</select>
+	
+	<!-- 공지사항 조회 -->
+	<select id="selectNoticBoardList" resultMap="boardInfo">
+		SELECT CB_BOARD_NUM
+	        , CB_BOARD_TITLE
+	        , TO_CHAR(CB_BOARD_DATE, 'YYYY.MM.DD') AS CB_BOARD_DATE
+	        , MEM_ID
+	        , CLUB_CODE
+	        , MEM_NAME
+	        , (SELECT COUNT(CB_CMT_NUM)
+				FROM BOOK_CLUB_BOARD_COMMENT
+				WHERE CB_BOARD_NUM = BOOK_CLUB_BOARD.CB_BOARD_NUM) AS CB_CMT_COUNT
+	        , CB_READ_CNT
+		FROM BOOK_CLUB_BOARD
+		WHERE CLUB_CODE = #{clubCode}
+		AND CB_PIN = 1
+		ORDER BY CB_BOARD_DATE
+	</select>
+	
+	<!-- 북클럽 게시글 검색 -->
+	<select id="selectSearhClubBoardList" resultMap="boardInfo">
+		SELECT CB_BOARD_NUM
+		    , CB_BOARD_TITLE
+		    , TO_CHAR(CB_BOARD_DATE, 'YYYY-MM-DD') AS CB_BOARD_DATE
+		    , MEM_ID
+		    , CLUB_CODE
+		    , MEM_NAME
+		    , (SELECT COUNT(CB_CMT_NUM)
+				FROM BOOK_CLUB_BOARD_COMMENT
+				WHERE CB_BOARD_NUM = BOOK_CLUB_BOARD.CB_BOARD_NUM) AS CB_CMT_COUNT
+			, CB_READ_CNT
+		FROM BOOK_CLUB_BOARD
+		WHERE CLUB_CODE = #{clubCode} 
+		AND ${sort} LIKE '%'||#{keyword}||'%'
+		ORDER BY CB_BOARD_NUM DESC
+	</select>
+	
+	<!-- 게시글 상세조회 -->
+	<select id="selectClubBoardDetail" resultMap="boardInfo">
+		SELECT CB_BOARD_NUM
+		    , CB_BOARD_TITLE
+		    , CB_BOARD_CONTENT
+		    , TO_CHAR(CB_BOARD_DATE, 'YYYY.MM.DD HH24:MI') AS CB_BOARD_DATE
+		    , CLUB_CODE
+		    , MEM_ID
+		    , MEM_NAME
+		    , (SELECT COUNT(CB_CMT_NUM)
+				FROM BOOK_CLUB_BOARD_COMMENT
+				WHERE CB_BOARD_NUM = BOOK_CLUB_BOARD.CB_BOARD_NUM) AS CB_CMT_COUNT
+			, CB_READ_CNT
+			, MEM_IMAGE
+		FROM BOOK_CLUB_BOARD
+		WHERE CB_BOARD_NUM = #{cbBoardNum}
+		AND CLUB_CODE = #{clubCode}
+	</select>
+	
+	<!-- 게시글 조회수 -->
+	<update id="updateCbReadCnt">
+		UPDATE BOOK_CLUB_BOARD
+		SET 
+		CB_READ_CNT = CB_READ_CNT + 1
+		WHERE CB_BOARD_NUM = #{cbBoardNum}
+	</update>
+	
+	<!-- 게시글 수정 -->
+	<update id="updateClubBoardDetail">
+		UPDATE BOOK_CLUB_BOARD 
+		SET
+		CB_BOARD_TITLE = #{cbBoardTitle}
+		, CB_BOARD_CONTENT = #{cbBoardContent}
+		WHERE CB_BOARD_NUM = #{cbBoardNum}
+		AND CLUB_CODE = #{clubCode}
+	</update>
+	
+	<!-- 게시글 삭제 -->
+	<delete id="deleteClubBoard">
+		DELETE BOOK_CLUB_BOARD
+		WHERE CB_BOARD_NUM = #{cbBoardNum}
+	</delete>
+	
+	<!-- 댓글등록 -->
+	<insert id="insertRegBoardCmt">
+	INSERT INTO BOOK_CLUB_BOARD_COMMENT (
+		CB_CMT_NUM
+		, CB_CMT_CONTENT
+		, MEM_NAME
+		, MEM_ID
+		, CB_BOARD_NUM
+		, CLUB_CODE
+	) VALUES (
+		(SELECT 'CBCMT_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CB_CMT_NUM, 7))), 0) + 1, 3, 0) AS CB_CMT_NUM FROM BOOK_CLUB_BOARD_COMMENT)
+		, #{cbCmtContent}
+		, #{memName}
+		, #{memId}
+		, #{cbBoardNum}
+		, #{clubCode}
+	)
+	</insert>
+	
+	<!-- 댓글조회 -->
+	<select id="selectCbCmtList" resultMap="cmt">
+		SELECT	CMT.MEM_ID 
+			, CMT.MEM_NAME
+			, TO_CHAR(CB_CMT_DATE, 'YYYY.MM.DD HH24:MI:SS') AS CB_CMT_DATE
+			, CB_CMT_CONTENT
+			, CB_CMT_NUM
+			, CB_BOARD_NUM
+			, CMT.CLUB_CODE
+			, MEM.MEM_IMAGE
+		FROM BOOK_CLUB_BOARD_COMMENT CMT, BOOK_MEMBER MEM
+		WHERE CB_BOARD_NUM = #{cbBoardNum}
+		AND CMT.MEM_ID = MEM.MEM_ID
+		ORDER BY CB_CMT_DATE
+	</select>
+	
+	<!-- 댓글 수정 -->
+	<update id="updateCbCmt">
+		UPDATE BOOK_CLUB_BOARD_COMMENT
+		SET
+		CB_CMT_CONTENT = #{cbCmtContent}
+		WHERE CB_CMT_NUM = #{cbCmtNum}
+	</update>
+	<!-- 댓글 삭제 -->
+	<delete id="deleteCbCmt">
+		DELETE BOOK_CLUB_BOARD_COMMENT
+		WHERE CB_CMT_NUM = #{cbCmtNum}
+	</delete>
+	
+	<!-- 모임 가입 -->
+	<insert id="insertClubJoin">
+		INSERT INTO BOOK_CLUB_APPLY (
+			CLUB_APPLY_CODE
+			, CLUB_CODE
+			, CLUB_NAME
+			, MEM_ID
+			, MEM_NAME
+			, MEM_IMAGE
+		) VALUES (
+			(SELECT 'APPLY_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CLUB_APPLY_CODE, 7))), 0) + 1, 3, 0) AS CLUB_APPLY_CODE FROM BOOK_CLUB_APPLY)
+			, #{clubCode}
+			, #{clubName}
+			, #{memId}
+			, #{memName}
+			, #{memImage}
+		)
+	</insert>
+	
+	<!-- 클럽승인코드 조회 -->
+	<select id="selectClubApplyCode" resultType="String">
+		SELECT CLUB_APPLY_CODE
+		FROM BOOK_CLUB_APPLY
+		WHERE MEM_ID = #{memId}
+	</select>
+	
+	<!-- 북클럽멤버 조회 -->
+	<select id="selectClubMemberList" resultMap="memberMapper.member">
+		SELECT MEM_ID
+		    , MEM_NAME
+		    , MEM_IMAGE
+		    , CLUB_CODE
+		    , CLUB_ADMIN
+		    , (SELECT COUNT(COMPLIT_CODE)
+				FROM BOOK_COMPLIT
+		        WHERE MEM_ID = BM.MEM_ID
+				AND to_char(LOCALTIMESTAMP,'yyyy/mm') || '/01' &lt;= COMPLIT_DATE
+				AND to_char(LAST_DAY(LOCALTIMESTAMP),'yyyy/mm/dd') &gt;= COMPLIT_DATE
+		        ) AS BOOK_COMPLIT_CNT
+		FROM BOOK_MEMBER BM
+		WHERE CLUB_CODE = #{clubCode}
+		ORDER BY BOOK_COMPLIT_CNT DESC
+	</select>  
+	
+	<!-- 댓글수 -->
+	<select id="selectCbCmtCount" resultType="int">
+		select count(CB_CMT_NUM)
+		FROM BOOK_CLUB_BOARD_COMMENT
+		WHERE CB_BOARD_NUM = #{cbBoardNum}
+	</select>
+	
+	<!-- 게시글 전체 개수 -->
+	<select id="selectClubBoardListCnt" resultType="int">
+		SELECT COUNT(CB_BOARD_NUM)
+		FROM BOOK_CLUB_BOARD
+		WHERE CLUB_CODE = #{clubCode} 
+		<if test="keyword != null and !keyword.equals('')">
+		AND ${sort} LIKE '%'||#{keyword}||'%'
+		</if>
+	</select>
+	
+	<!-- 북클럽 전체 개수 -->
+	<select id="selectClubListCnt" resultType="int">
+		SELECT COUNT(CLUB_CODE)
+		FROM BOOK_CLUB
+		WHERE 1=1
+		<if test="keyword != null and !keyword.equals('')">
+		AND ${sort} LIKE '%'||#{keyword}||'%'
+		</if>
+	</select>
+	
+	<!-- 실시간회원완독수랭킹 -->
+	<select id="selectBookClubMemComplitBook" resultType="int">
+		SELECT COUNT(COMPLIT_CODE)
+		FROM BOOK_COMPLIT
+		WHERE MEM_ID = #{memId}
+		AND to_char(LOCALTIMESTAMP,'yyyy/mm') || '/01' &lt;= COMPLIT_DATE
+		AND to_char(LAST_DAY(LOCALTIMESTAMP),'yyyy/mm/dd') &gt;= COMPLIT_DATE
+	</select>
+	
+
+
+	<!-- ///////////////////// 북클럽 관리 ///////////////////////////// -->
+	<!-- 신청회원 리스트 -->
+	<select id="selectClubApplyList" resultMap="apply">
+		SELECT CLUB_APPLY_CODE
+			, CLUB_CODE
+			, MEM_ID
+			, MEM_NAME
+			, MEM_IMAGE
+		FROM BOOK_CLUB_APPLY
+		WHERE CLUB_CODE = #{clubCode}
+		ORDER BY CLUB_APPLY_CODE
+	</select>
+	
+	<!-- 북클럽 신청 수락 -->
+	<update id="updateClubAcceptance">
+		UPDATE BOOK_MEMBER
+		SET
+		CLUB_CODE = #{clubCode}
+		WHERE MEM_ID = #{memId}
+	</update>
+	
+	<!-- 거절 -->
+	<delete id="deleteApplyList">
+		DELETE BOOK_CLUB_APPLY
+		WHERE MEM_ID = #{memId}
+	</delete>
+	
+	<!-- 회원리스트 조회 -->
+	<select id="selectClubAdminMemberList" resultMap="memberMapper.member">
+		SELECT MEM_ID
+		    , MEM_NAME
+		    , MEM_IMAGE
+		    , CLUB_CODE
+		    , CLUB_ADMIN
+		FROM BOOK_MEMBER
+		WHERE CLUB_CODE = #{clubCode}
+		ORDER BY MEM_ID 
+	</select>  
+	
+	<!-- 모임강퇴 -->
+	<update id="clubMemberKick">
+		UPDATE BOOK_MEMBER
+		SET
+		CLUB_CODE = NULL
+		WHERE MEM_ID = #{memId}
+	</update>
+	
+	<!-- 클럽 수락시 알림보내기 -->
+	<insert id="insertClubJoinMessage">
+		INSERT INTO MESSAGE (
+			MSG_CODE
+			, GET_ID
+			, MSG_CONTENT
+		) VALUES (
+			(SELECT 'MSG_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(MSG_CODE, 5))), 0) + 1, 3, 0) AS MSG_CODE FROM MESSAGE)
+			, #{getId}
+			, '신청한 북클럽에 가입되셨습니다. 북클럽 게시판에 첫 인사를 올려보세요!'
+		)		
+	</insert>
+	
+	<!-- 이달의책 등록 -->
+	<insert id="insertMonthlyBook">
+		INSERT INTO MONTHLY_BOOK (
+			MB_CODE
+			, MB_TITLE
+			, MB_WRITER
+			, MB_PUBLISHER
+			, MB_THUMBNAIL
+			, CLUB_CODE
+		) VALUES (
+			(SELECT 'MB_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(MB_CODE, 4))), 0) + 1, 3, 0) AS MB_CODE FROM MONTHLY_BOOK)
+			, #{mbTitle}
+			, #{mbWriter}
+			, #{mbPublisher}
+			, #{mbThumbnail}
+			, #{clubCode}
+		)
+	</insert>
+	
+	<!-- 이달의책 업데이트 -->
+	<update id="updateMonthlyBook">
+		UPDATE MONTHLY_BOOK
+		SET
+		MB_TITLE = #{mbTitle}
+		, MB_WRITER = #{mbWriter}
+		, MB_PUBLISHER = #{mbPublisher}
+		, MB_THUMBNAIL = #{mbThumbnail}
+		WHERE CLUB_CODE = #{clubCode}
+	</update>
+	<!-- 이달의책 조회 -->
+	<select id="selectMonthlyBook" resultMap="monthly">
+		SELECT MB_CODE
+			, MB_TITLE
+			, MB_WRITER
+			, MB_PUBLISHER
+			, MB_THUMBNAIL
+		FROM MONTHLY_BOOK		
+		WHERE CLUB_CODE = #{clubCode}
+	</select>
+	
+	<!-- ////////////////////////알림함///////////////////////////// -->	
+	<!-- 알림함 조회 -->
+	<select id="selectGetMsgList" resultMap="adminMapper.msg">
+		SELECT MSG_CODE
+			, MSG_CONTENT
+			, TO_CHAR(SEND_DATE, 'YYYY-MM-DD HH24:MI') AS SEND_DATE
+			, IS_READ
+		FROM MESSAGE
+		WHERE GET_ID = #{getId}
+		ORDER BY SEND_DATE DESC
+	</select>
+	
+	<!-- 알림함상세 조회 -->
+	<select id="selectGetMsgDetail" resultMap="adminMapper.msg">
+		SELECT MSG_CODE
+			, MSG_CONTENT
+			, TO_CHAR(SEND_DATE, 'YYYY-MM-DD HH24:MI') AS SEND_DATE
+			, IS_READ
+		FROM MESSAGE
+		WHERE MSG_CODE = #{msgCode}
+		AND GET_ID = #{getId}
+		ORDER BY SEND_DATE DESC
+	</select>
+	
+	<!-- 알림갯수 -->
+	<select id="selectMsgCount" resultType="int">
+		SELECT COUNT(MSG_CODE)
+		FROM MESSAGE
+		WHERE GET_ID = #{getId}
+		AND IS_READ = 'N'
+	</select>
+	
+	<!-- 알림 읽음 표시 -->
+	<update id="updateMsgIsRead">
+		UPDATE MESSAGE
+		SET
+		IS_READ = 'Y'
+		WHERE MSG_CODE = #{msgCode}
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
