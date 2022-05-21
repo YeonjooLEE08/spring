@@ -32,7 +32,7 @@
 	<div class="title">
 			${bookDetail.title }
 	</div>
-	<div class="bkDetail" style="width:100%;">
+	<div class="bkDetail">
 		<div class="imgT">
 			<table>
 				<tr>
@@ -121,7 +121,7 @@
  </div>
 
 
-<script type="text/javascript" src="/resources/js/book/admin_manageBook.js?ver=8"></script>
+<script type="text/javascript" src="/resources/js/book/admin_manageBook.js?ver=9"></script>
 <!-- <script type="text/javascript" src="/resources/js/book/recommend_book.js?ver=5"></script>
 <script type="text/javascript" src="/resources/js/book/reserve_book.js?ver=13"></script> -->
 </body>

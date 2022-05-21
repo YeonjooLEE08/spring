@@ -19,7 +19,6 @@
 			<li class="menu-v1" id="menu-v1"><a href="/book/bookListU">자료검색</a></li>
 			<li class="menu-v1" id="menu-v1"><a href="/book/selectNewBook1">신착도서</a></li>
 			<li class="menu-v1" id="menu-v1"><a href="/book/selectRcdBook1">추천도서</a></li>
-			<li class="menu-v1" id="menu-v1"><a href="/book/selectRcdBook2">추천도서</a></li>
 			<li class="menu-v1" id="menu-v1-y"><a href="#">희망도서</a>
 				<ul class="submenu">
 					<li><a href="/book/hopeBookInfo">희망도서 신청 안내</a></li>
