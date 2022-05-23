@@ -64,6 +64,7 @@
       <div class="tit">공지사항</div>
    	</div>
    	<div class="detail">
+   	<input type="hidden" id="ntCode" value="${ntBoard.ntCode }">
 		<table>
 			<tbody class="Info">
 				<tr>
@@ -89,11 +90,12 @@
 		<div class="ntBtn">
 			<c:if test="${sessionScope.loginInfo.isAdmin eq 'Y' }" >
 				<button type="button" class="btn btn-success btn-sm justify-content-md-end" onclick="location.href='updateNtBoardForm?ntCode=${ntBoard.ntCode}';">수정</button>
-				<button type="button" class="btn btn-success btn-sm justify-content-md-end" onclick="location.href='deleteNtBoardDetail?ntCode=${ntBoard.ntCode}';">삭제</button>
+				<button type="button" class="btn btn-success btn-sm justify-content-md-end" onclick="deleteNt();">삭제</button>
 			</c:if>
 			<button type="button" class="btn btn-success btn-sm justify-content-md-end" onclick="location.href='/board/ntBoardList';">목록</button>
 	</div>
 </div>
 </div>
+<script type="text/javascript" src="/resources/js/board/nt_board_detail.js?ver=1"></script>
 </body>
 </html>

@@ -22,7 +22,7 @@ img:hover{
 	<div class="subTit">
       <div class="line_map">홈 > 도서검색 > 신착도서</div>
       <div class="tit">신착도서</div>
-      <div class="sub_tit">하..멘트어렵노..가장최근에들어온도서6권</div>
+      <div class="sub_tit">가장최근에들어온도서6권</div>
    </div>
    
    <div class="searchBar">

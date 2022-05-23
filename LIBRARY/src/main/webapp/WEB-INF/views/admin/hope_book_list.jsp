@@ -32,6 +32,7 @@
 			<option value="0">신청중</option>
 			<option value="1">처리중</option>
 			<option value="2">소장중</option>
+			<option value="3">거절</option>
 		</select>
 		<button type="submit" class="btn btn-success">적용</button>
 	</form>

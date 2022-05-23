@@ -8,15 +8,15 @@ document.addEventListener('DOMContentLoaded', function() {
     {
           googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
           className: '공휴일',
-          color: '#be5683', //rgb,#ffffff 등의 형식으로 할 수 있어요.
+          color: '#ffffff' //rgb,#ffffff 등의 형식으로 할 수 있어요.
           //textColor: 'black' 
-        }/*,
+        },
       {
-          googleCalendarId: '여기에 구글 캘린더 ID를 붙여넣기하시면 됩니다.',
-          className: '늘봄 휴관일',
-            color: '#204051',
+          googleCalendarId: 'o4bmtultrdr3k2uljoa8bg38m4@group.calendar.google.com',
+          className: '늘봄도서관',
+            color: '#be5683'
             //textColor: 'black' 
-        },*/
+        }
 
     ]
   });

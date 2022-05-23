@@ -69,7 +69,7 @@
 <div class="container">
 	<div class="subTit">
       <div class="line_map">홈 > 참여마당 > 공지사항</div>
-      <div class="tit">공지사항 글쓰기</div>
+      <div class="tit">공지사항 글수정</div>
    	</div>
 
 <form action="/board/updateNtBoardDetail" method="post"  class="needs-validation" enctype="multipart/form-data">
@@ -96,12 +96,12 @@
 			</tr>
 			<tr>
 				<td>첨부파일</td>
-				<td><input type="file" name="uploadFile" class="form-control"></td>
+				<td><input type="file" name="uploadFile" class="form-control" value="${ntBoard.fileName }"></td>
 			</tr>
 		</table>
 		</div>
 	<div class="btnDiv">
-		<button type="submit" class="btn btn-success">글쓰기</button>
+		<button type="submit" class="btn btn-success">글수정</button>
 	</div>
 </form>
 </div>

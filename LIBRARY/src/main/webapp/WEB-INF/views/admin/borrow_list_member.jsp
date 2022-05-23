@@ -63,7 +63,7 @@
 				<tr>
 					<td>${borrow.brCode }</td>
 					<td>${borrow.memId }</td>
-					<td>${borrow.title }</td>
+					<td><a href="/book/bookDetailAdmin?bookCode=${borrow.bookCode}">${borrow.title }</a></td>
 					<td>${borrow.isbn }</td>
 					<td>${borrow.brDate }</td>
 					<td>${borrow.rtDate }</td>
