@@ -7,7 +7,6 @@ function clubCreate(tag){
 		var result = confirm('모임을 생성하시겠습니까?');
 		var formTag = document.getElementById('regClub');
 		if(result){
-			alert('이달의 책을 등록해주십시오.');
 			formTag.submit();
 		}
 		else{

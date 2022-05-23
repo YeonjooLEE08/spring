@@ -54,7 +54,6 @@
 		<result column="MEM_NAME" 			property="memName"/>
 		<result column="CLUB_NAME" 			property="clubName"/>
 		<result column="MEM_IMAGE" 			property="memImage"/>
-		<result column="CLUB_APPLY_DATE" 	property="clubApplyDate"/>
 	</resultMap>
 	
 	<resultMap type="com.kh.library.club.vo.ClubImageVO" id="cbImg">

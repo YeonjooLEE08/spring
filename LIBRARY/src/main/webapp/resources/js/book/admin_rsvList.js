@@ -43,7 +43,7 @@ function insertBorrow(){
             var now = new Date();
             var reBorrow = new Date(originRtDate);
             
-            reBorrow.setDate(now.getDate()+3);
+            reBorrow.setDate(reBorrow.getDate()+3);
             
             
             

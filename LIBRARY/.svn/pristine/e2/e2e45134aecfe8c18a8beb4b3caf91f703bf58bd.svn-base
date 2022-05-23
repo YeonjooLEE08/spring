@@ -227,7 +227,7 @@
    <select id="selectIsDelete" resultType="String">
    		SELECT IS_DELETE
    		FROM BOOK
-   		WHERE ISBN=#{isbn}
+   		WHERE BOOK_CODE=#{bookCode}
    </select>
    
 	<!-- 검색 조회 -->
