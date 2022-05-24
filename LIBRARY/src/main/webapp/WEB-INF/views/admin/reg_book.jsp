@@ -106,7 +106,7 @@
 					
 				</div>
 				<div class="btnDiv">
-					<button type="submit" class="btn btn-success">도서등록</button>
+					<button type="button" onclick="regBook();" class="btn btn-success">도서등록</button>
 				</div>
 			</form>
 		</div>

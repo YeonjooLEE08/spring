@@ -87,9 +87,14 @@ $(document).ready(function (){
 
 function pickSearch(selected){
 	
+	
 	var title = selected.childNodes[1].innerText;
 	var writer = selected.childNodes[2].innerText;
 	var publisher = selected.childNodes[3].innerText;
+	
+
+		
+
 		
 	$('div').removeClass("active");
 	$(selected).addClass("active");
@@ -112,6 +117,11 @@ function submitHp(){
 	var writer = $('#hpBookForm #writer').val();
 	
 	$('#submitHpBook').unbind('click');
+	
+		if(title == ''){
+			alert('도서명은 필수입력입니다.');
+			return;
+		}	
 	
 	$.ajax({
 		async : false,
